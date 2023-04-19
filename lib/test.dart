@@ -1,8 +1,4 @@
 import 'package:flutter/material.dart';
-
-void main() {
-  runApp(MyApp());
-}
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -50,22 +46,10 @@ class _MyHomePageState extends State<MyHomePage> {
     Container(
       width: 250,
       child: TextField(decoration: InputDecoration(hintText: "User name"),)),
-      SizedBox(height: 40,),
       Container(
       width: 250,
       child: TextField(decoration: InputDecoration(hintText: "Password"),)),
       const SizedBox(height: 50,),
-      Container(
-        alignment: Alignment.center,
-        height: 35,
-        width: 100,
-        decoration:const  BoxDecoration(
-        color: Colors.amber,
-        borderRadius: BorderRadius.all(Radius.circular(20))),
-        child: Text("Login"),
-        ),
-
-        SizedBox(height: 30,),
       Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: const  [
@@ -78,9 +62,7 @@ class _MyHomePageState extends State<MyHomePage> {
        Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children:  [
-         SignInCard('assets/icons/google.png'),
-         SizedBox(width: 50,),
-          SignInCard('assets/icons/facebook.png')
+  SignInCard("https://www.google.com/imgres?imgurl=https%3A%2F%2Fassets.stickpng.com%2Fimages%2F5847f9cbcef1014c0b5e48c8.png&tbnid=6iDpAdyA65M1MM&vet=12ahUKEwjk0Pfj5Kj-AhWbFLcAHSCTCpcQMygAegUIARDHAQ..i&imgrefurl=https%3A%2F%2Fwww.stickpng.com%2Fimg%2Ficons-logos-emojis%2Ftech-companies%2Fgoogle-g-logo&docid=v61A3qKPMcJtPM&w=500&h=512&q=google%20transparent%20icon&ved=2ahUKEwjk0Pfj5Kj-AhWbFLcAHSCTCpcQMygAegUIARDHAQ")
         ],
       )
     ],),
@@ -102,7 +84,7 @@ class SignInCard extends StatelessWidget
   Widget build(BuildContext context) {
     return Container(
       
-      child: Image.asset(imageLink),
+      child: Image.network(imageLink),
       height: 50,width: 50, decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(25)),color: Colors.white,boxShadow: [BoxShadow(blurRadius: 10,spreadRadius: 10,color: Color.fromARGB(255, 246, 242, 242))]));
   }
 
