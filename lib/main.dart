@@ -1,3 +1,4 @@
+import 'package:bustracker/Homepage.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -12,7 +13,13 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        textTheme: const TextTheme(titleLarge: TextStyle(fontSize: 30,color: Colors.red)),
+        textTheme: const TextTheme(
+          titleLarge: TextStyle(fontSize: 30,color: Colors.red,),
+          titleMedium: TextStyle(fontSize: 25,fontWeight: FontWeight.w900),
+          bodySmall: TextStyle(fontWeight: FontWeight.w900,fontSize: 15),
+          labelLarge: TextStyle(fontSize: 20,)
+          ),
+          
        
         primarySwatch: Colors.blue,
       ),
@@ -42,50 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
     
     return Scaffold(
     
-    body: SizedBox(width: double.infinity,
-    child: Column(children: [
-      const SizedBox(height: 100,),
-    Text("Login" ,style: Theme.of(context).textTheme.titleLarge,),
-    const SizedBox(height: 100,),
-    Container(
-      width: 250,
-      child: TextField(decoration: InputDecoration(hintText: "User name"),)),
-      SizedBox(height: 40,),
-      Container(
-      width: 250,
-      child: TextField(decoration: InputDecoration(hintText: "Password"),)),
-      const SizedBox(height: 50,),
-      Container(
-        alignment: Alignment.center,
-        height: 35,
-        width: 100,
-        decoration:const  BoxDecoration(
-        color: Colors.amber,
-        borderRadius: BorderRadius.all(Radius.circular(20))),
-        child: Text("Login"),
-        ),
-
-        SizedBox(height: 30,),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: const  [
-          Text("Dont have an acoount",),
-          SizedBox(width: 10,),
-           Text("Click Here", style: TextStyle(color: Colors.blue),)
-        ],
-      ),
-      SizedBox(height: 50,),
-       Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children:  [
-         SignInCard('assets/icons/google.png'),
-         SizedBox(width: 50,),
-          SignInCard('assets/icons/facebook.png')
-        ],
-      )
-    ],),
-    
-    ),
+    body:Homepage()
     );
   }
 }
