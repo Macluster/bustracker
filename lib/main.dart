@@ -1,5 +1,6 @@
 import 'package:bustracker/Homepage.dart';
 import 'package:bustracker/LoginPage.dart';
+import 'package:bustracker/Models/MenuItems.dart';
 import 'package:bustracker/SidebarNavBar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_zoom_drawer/config.dart';
@@ -17,20 +18,27 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         textTheme: const TextTheme(
             titleLarge: TextStyle(
               fontSize: 30,
-              color: Colors.red,
+              color: Colors.black,
             ),
-            titleMedium: TextStyle(fontSize: 25, fontWeight: FontWeight.w900),
-            bodySmall: TextStyle(fontWeight: FontWeight.w900, fontSize: 15),
+            headlineMedium: TextStyle(fontSize: 60,fontWeight: FontWeight.bold,color: Colors.white),
+                        headlineLarge: TextStyle(fontSize: 60,fontWeight: FontWeight.bold,color: Colors.black),
+
+            titleMedium:  TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            titleSmall: TextStyle(fontWeight: FontWeight.w900, fontSize: 17),
             bodyMedium: TextStyle(fontSize: 24),
-            labelLarge: TextStyle(
-              fontSize: 20,
+            bodySmall: TextStyle(fontSize: 15),
+            labelSmall: TextStyle(
+              fontSize: 17,
+             
             ),
             labelMedium: TextStyle(
               fontSize: 20,
+            
             )),
         primarySwatch: Colors.blue,
       ),
@@ -49,9 +57,10 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  var widgets = [
-    Homepage(),
-    LoginPage()
+
+  int currentItem=0;
+  var pages=[
+    Homepage(),LoginPage()
   ];
 
   @override
@@ -60,8 +69,12 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Colors.amber,
         body: ZoomDrawer(
           style: DrawerStyle.defaultStyle,
-          mainScreen: Homepage(),
-          menuScreen: SidenavBar(),
+          mainScreen: pages[currentItem],
+          menuScreen: SidenavBar((item){
+            setState(() {
+               this.currentItem=item;
+            });
+           }),
         ));
   }
 }

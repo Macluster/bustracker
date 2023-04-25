@@ -1,6 +1,58 @@
 import 'package:flutter/material.dart';
 
-class SidenavBar extends StatelessWidget {
+import 'Models/MenuItems.dart';
+
+class SidenavBar extends StatefulWidget {
+
+  
+  var GetSelectedItem;
+
+  SidenavBar(this.GetSelectedItem);
+
+  @override
+  State<SidenavBar> createState() => _SidenavBarState();
+}
+
+class _SidenavBarState extends State<SidenavBar> {
+
+  String getSelectedItem()
+  {
+   
+    return selectedItem;
+  }
+
+  var selectedItem="Home";
+  var menuList=[  
+     MenuItem("Home", Icons.home),
+    MenuItem("Settings", Icons.settings),
+             
+              MenuItem("Profile", Icons.person),
+            
+              MenuItem("Apply St Card", Icons.school),
+              
+              MenuItem("Apply Other", Icons.book)];
+
+Widget buildMenuItem(MenuItem item,int index)=>
+ ListTile(
+  onTap: (){
+    setState(() {
+          selectedItem=item.title;
+
+    });
+     widget.GetSelectedItem(index);
+  },
+      selected: selectedItem==item.title?true:false,
+  
+      selectedTileColor: Color.fromARGB(255, 251, 226, 150),
+      focusColor: Color.fromARGB(255, 247, 227, 167),
+      hoverColor: Color.fromARGB(255, 247, 227, 167),
+      leading: Icon(item.icon),
+      title: Text(
+        item.title,
+        style: TextStyle(fontSize: 17,fontWeight: FontWeight.normal),
+      ),
+    );
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -13,19 +65,8 @@ class SidenavBar extends StatelessWidget {
               const SizedBox(
                 height: 200,
               ),
-              MenuItem("Settings", Icons.settings),
-              const SizedBox(
-                height: 20,
-              ),
-              MenuItem("Profile", Icons.person),
-              const SizedBox(
-                height: 20,
-              ),
-              MenuItem("Apply St Card", Icons.school),
-              const SizedBox(
-                height: 20,
-              ),
-              MenuItem("Apply Other", Icons.book)
+             
+             for ( var v in menuList) buildMenuItem(v,menuList.indexOf(v))
             ],
           ),
         ),
@@ -34,22 +75,3 @@ class SidenavBar extends StatelessWidget {
   }
 }
 
-class MenuItem extends StatelessWidget {
-  String text;
-  IconData icon;
-
-  MenuItem(this.text, this.icon);
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      selectedTileColor: Color.fromARGB(255, 251, 226, 150),
-      focusColor: Color.fromARGB(255, 247, 227, 167),
-      hoverColor: Color.fromARGB(255, 247, 227, 167),
-      leading: Icon(icon),
-      title: Text(
-        text,
-        style: Theme.of(context).textTheme.bodyMedium,
-      ),
-    );
-  }
-}

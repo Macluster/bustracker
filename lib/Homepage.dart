@@ -1,4 +1,5 @@
 import 'package:bustracker/LoginPage.dart';
+import 'package:bustracker/NewRoutePage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
 
@@ -12,6 +13,10 @@ class _HomepageState extends State<Homepage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        foregroundColor: Colors.black,
+        backgroundColor: Colors.white,
+        elevation: 0,
+        title: Text("BUS TRACKER", style: Theme.of(context).textTheme.titleMedium,),
         leading: GestureDetector(
             onTap: () {
               ZoomDrawer.of(context)!.toggle();
@@ -25,12 +30,16 @@ class _HomepageState extends State<Homepage> {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                
                 children: [
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Text(
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(
+                        height: 20,
+                      ),
+                       Text(
                     "My routes",
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
@@ -51,7 +60,7 @@ class _HomepageState extends State<Homepage> {
                     height: 30,
                   ),
                   Text(
-                    "Suggested Trips",
+                    "Recent Travels",
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   const SizedBox(
@@ -69,19 +78,25 @@ class _HomepageState extends State<Homepage> {
                   const SizedBox(
                     height: 10,
                   ),
-                  Container(
-                    alignment: Alignment.center,
-                    height: 50,
-                    width: double.infinity,
-                    decoration: BoxDecoration(color: Colors.amber),
-                    child: Text(
-                      "New Route",
-                      style: Theme.of(context).textTheme.labelLarge,
+                    ],
+                  ),
+                 
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => NewRoutePage()));
+                    },
+                    child: Container(
+                      alignment: Alignment.center,
+                      height: 50,
+                      width: double.infinity,
+                      decoration: BoxDecoration(color: Colors.amber),
+                      child: Text(
+                        "New Route",
+                        style: Theme.of(context).textTheme.labelSmall,
+                      ),
                     ),
                   ),
-                  const SizedBox(
-                    height: 20,
-                  ),
+                  
                 ],
               ),
             ),
@@ -101,9 +116,7 @@ class MyRoutesCard extends StatelessWidget {
       height: 50,
       width: 120,
       margin: EdgeInsets.only(right: 10),
-      decoration: const BoxDecoration(
-          color: Color.fromARGB(255, 225, 155, 241),
-          borderRadius: BorderRadius.all(Radius.circular(10))),
+      decoration: const BoxDecoration(color: Colors.amber, borderRadius: BorderRadius.all(Radius.circular(10))),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -134,15 +147,7 @@ class MyTripCard extends StatelessWidget {
         height: 100,
         width: 220,
         margin: EdgeInsets.only(right: 10),
-        decoration: const BoxDecoration(
-            boxShadow: [
-              BoxShadow(
-                  blurRadius: 20,
-                  spreadRadius: 1,
-                  color: Color.fromARGB(255, 191, 187, 187))
-            ],
-            color: Colors.white,
-            borderRadius: BorderRadius.all(Radius.circular(10))),
+        decoration: const BoxDecoration(color: Color.fromARGB(255, 246, 232, 232), borderRadius: BorderRadius.all(Radius.circular(10))),
         child: Padding(
           padding: const EdgeInsets.all(15),
           child: Column(
@@ -161,17 +166,17 @@ class MyTripCard extends StatelessWidget {
                   ),
                   Text(
                     "Kundanoor to Kalamaserry",
-                    style: Theme.of(context).textTheme.bodySmall,
+                    style: Theme.of(context).textTheme.titleSmall,
                     textAlign: TextAlign.center,
                   )
                 ],
               ),
               Row(
-                children: const [
-                  SizedBox(
+                children: [
+                  const SizedBox(
                     width: 25,
                   ),
-                  Text("Tuesday, 12:15 AM  - 12:50"),
+                  Text("Tuesday, 12:15 AM  - 12:50", style: Theme.of(context).textTheme.labelSmall),
                 ],
               )
             ],
