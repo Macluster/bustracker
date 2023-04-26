@@ -38,6 +38,7 @@ Widget buildMenuItem(MenuItem item,int index)=>
     setState(() {
           selectedItem=item.title;
 
+
     });
      widget.GetSelectedItem(index);
   },

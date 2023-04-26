@@ -25,20 +25,19 @@ class MyApp extends StatelessWidget {
               fontSize: 30,
               color: Colors.black,
             ),
-            headlineMedium: TextStyle(fontSize: 60,fontWeight: FontWeight.bold,color: Colors.white),
-                        headlineLarge: TextStyle(fontSize: 60,fontWeight: FontWeight.bold,color: Colors.black),
-
-            titleMedium:  TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            headlineMedium: TextStyle(
+                fontSize: 60, fontWeight: FontWeight.bold, color: Colors.white),
+            headlineLarge: TextStyle(
+                fontSize: 60, fontWeight: FontWeight.bold, color: Colors.black),
+            titleMedium: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             titleSmall: TextStyle(fontWeight: FontWeight.w900, fontSize: 17),
             bodyMedium: TextStyle(fontSize: 24),
             bodySmall: TextStyle(fontSize: 15),
             labelSmall: TextStyle(
               fontSize: 17,
-             
             ),
             labelMedium: TextStyle(
               fontSize: 20,
-            
             )),
         primarySwatch: Colors.blue,
       ),
@@ -57,11 +56,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
-  int currentItem=0;
-  var pages=[
-    Homepage(),LoginPage()
-  ];
+  int currentItem = 0;
+  var pages = [Homepage(), LoginPage()];
 
   @override
   Widget build(BuildContext context) {
@@ -70,11 +66,11 @@ class _MyHomePageState extends State<MyHomePage> {
         body: ZoomDrawer(
           style: DrawerStyle.defaultStyle,
           mainScreen: pages[currentItem],
-          menuScreen: SidenavBar((item){
+          menuScreen: SidenavBar((item) {
             setState(() {
-               this.currentItem=item;
+              this.currentItem = item;
             });
-           }),
+          }),
         ));
   }
 }
