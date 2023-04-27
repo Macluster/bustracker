@@ -2,11 +2,24 @@ import 'package:bustracker/Homepage.dart';
 import 'package:bustracker/LoginPage.dart';
 import 'package:bustracker/Models/MenuItems.dart';
 import 'package:bustracker/SidebarNavBar.dart';
+import 'package:bustracker/backend/FirebaseDatabase.dart';
+import 'package:bustracker/backend/SupaBaseDatabase.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_zoom_drawer/config.dart';
 import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp();
+  await Supabase.initialize(
+    url: 'https://ogwbsawdfrfragnjwrhu.supabase.co',
+    anonKey:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9nd2JzYXdkZnJmcmFnbmp3cmh1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODI2MTIxNzcsImV4cCI6MTk5ODE4ODE3N30.K-QINUpml_pmIyvgsWZfmEC_RtfW-t7Ewz8v-SCbvqg',
+  );
+
   runApp(MyApp());
 }
 
