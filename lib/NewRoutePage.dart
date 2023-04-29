@@ -1,5 +1,7 @@
 import 'package:bustracker/BusDetailsPage.dart';
 import 'package:bustracker/Models/BusModel.dart';
+import 'package:bustracker/backend/FirebaseDatabase.dart';
+import 'package:bustracker/backend/SupaBaseDatabase.dart';
 import 'package:bustracker/data.dart';
 import 'package:flutter/material.dart';
 
@@ -18,10 +20,13 @@ class _NewRoutePageState extends State<NewRoutePage> {
   var busesInMyroute = [];
   int routeIndex = 0;
 
-  void getRoute() {
+  Future<void> getRoute() async {
+    var routes = await FirebaseDatabaseClass().GetRoute();
+
     routes.asMap().forEach((index, route) {
       if (route.contains(currentBusStop) && route.contains(destinationStop)) {
         routeIndex = index;
+        print(routeIndex);
         int currentstopIndex = route.indexOf(currentBusStop);
         int destinationStopIndex = route.indexOf(destinationStop);
         for (int i = currentstopIndex; i <= destinationStopIndex; i++) {
@@ -33,8 +38,11 @@ class _NewRoutePageState extends State<NewRoutePage> {
     });
   }
 
-  void getBusesInMyRoute() {
+  void getBusesInMyRoute() async {
+    var buses = await SupaBaseDatabase().GetBusData(1, 4);
+
     buses.forEach((element) {
+      print(element);
       if (element.busroute == routeIndex) {
         busesInMyroute.add(element);
       }
@@ -54,7 +62,10 @@ class _NewRoutePageState extends State<NewRoutePage> {
         foregroundColor: Colors.black,
         elevation: 0,
         leading: Icon(Icons.arrow_back),
-        title:                 Text("Select the Route",style: Theme.of(context).textTheme.titleLarge,),
+        title: Text(
+          "Select the Route",
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
       ),
       body: SizedBox(
         width: double.infinity,
@@ -63,7 +74,6 @@ class _NewRoutePageState extends State<NewRoutePage> {
             padding: const EdgeInsets.all(15),
             child: Column(
               children: [
-
                 Container(
                     width: screenWidth - 10,
                     child: DropdownButton(
@@ -77,11 +87,11 @@ class _NewRoutePageState extends State<NewRoutePage> {
                         ),
                         items: bustops
                             .map((item) => DropdownMenuItem(
-                              
                                   value: item['name'].toString(),
-                                      child:  Text(
+                                  child: Text(
                                     item['name'].toString(),
-                                    style: Theme.of(context).textTheme.labelMedium,
+                                    style:
+                                        Theme.of(context).textTheme.labelMedium,
                                   ),
                                 ))
                             .toList(),
@@ -103,20 +113,20 @@ class _NewRoutePageState extends State<NewRoutePage> {
                         ),
                         items: bustops
                             .map((item) => DropdownMenuItem(
-                                 
                                   value: item['name'].toString(),
-                                   child: Text(
+                                  child: Text(
                                     item['name'].toString(),
-                                    style: Theme.of(context).textTheme.labelMedium,
+                                    style:
+                                        Theme.of(context).textTheme.labelMedium,
                                   ),
                                 ))
                             .toList(),
-                        onChanged: (e) {
+                        onChanged: (e) async {
                           setState(() {
                             destinationStop = e.toString();
-                            getRoute();
-                            getBusesInMyRoute();
                           });
+                          await getRoute();
+                          getBusesInMyRoute();
                         })),
                 const SizedBox(
                   height: 20,
@@ -147,13 +157,20 @@ class _NewRoutePageState extends State<NewRoutePage> {
                 const SizedBox(
                   height: 40,
                 ),
-                 Align(
+                Align(
                     alignment: Alignment.centerLeft,
-                    child: Text(
-                      "Available buses in this route",
-                      style:
-                          Theme.of(context).textTheme.titleMedium
-                    )),
+                    child: Text("Available buses in this route",
+                        style: Theme.of(context).textTheme.titleMedium)),
+                busesInMyroute.length == 0
+                    ? Container(
+                        decoration: const BoxDecoration(),
+                        margin: EdgeInsets.only(top: 100),
+                        child: Image.asset(
+                          'assets/icons/art2.png',
+                          height: 200,
+                        ),
+                      )
+                    : Container(),
                 for (var item in busesInMyroute) BusCard(item)
               ],
             ),
@@ -172,7 +189,7 @@ class BusCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const  BoxDecoration(
+      decoration: const BoxDecoration(
           color: Color.fromARGB(255, 236, 222, 221),
           borderRadius: BorderRadius.all(Radius.circular(10))),
       margin: EdgeInsets.only(top: 10),
@@ -195,20 +212,19 @@ class BusCard extends StatelessWidget {
                 const SizedBox(
                   height: 10,
                 ),
-                 Text(
+                Text(
                   "Current Location: KannadiKadu bus stop",
                   style: Theme.of(context).textTheme.bodySmall,
                 )
               ],
             ),
             GestureDetector(
-              onTap: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>BusDetailsPage(model)));
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => BusDetailsPage(model)));
               },
-
-
-
-              
               child: Container(
                 alignment: Alignment.center,
                 height: 40,
