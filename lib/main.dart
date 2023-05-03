@@ -1,9 +1,11 @@
-import 'package:bustracker/Homepage.dart';
-import 'package:bustracker/LoginPage.dart';
+import 'package:bustracker/Components/DraweContainer.dart';
+import 'package:bustracker/Pages/Homepage.dart';
+import 'package:bustracker/Pages/LoginPage.dart';
 import 'package:bustracker/Models/MenuItems.dart';
-import 'package:bustracker/SidebarNavBar.dart';
+import 'package:bustracker/Components/SidebarNavBar.dart';
 import 'package:bustracker/backend/FirebaseDatabase.dart';
 import 'package:bustracker/backend/SupaBaseDatabase.dart';
+import 'package:bustracker/backend/SupabaseAuthentication.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_zoom_drawer/config.dart';
@@ -69,24 +71,19 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int currentItem = 0;
-  var pages = [Homepage(), LoginPage()];
+ 
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+     
         backgroundColor: Colors.amber,
-        body: ZoomDrawer(
-          style: DrawerStyle.defaultStyle,
-          mainScreen: pages[currentItem],
-          menuScreen: SidenavBar((item) {
-            setState(() {
-              this.currentItem = item;
-            });
-          }),
-        ));
+        body:Supabase.instance.client.auth.currentUser!=null? DrawerContainer():LoginPage());
   }
 }
+
+
+
 
 class SignInCard extends StatelessWidget {
   String imageLink = "";

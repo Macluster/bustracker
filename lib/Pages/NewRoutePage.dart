@@ -1,8 +1,8 @@
-import 'package:bustracker/BusDetailsPage.dart';
+import 'package:bustracker/Pages/BusDetailsPage.dart';
 import 'package:bustracker/Models/BusModel.dart';
 import 'package:bustracker/backend/FirebaseDatabase.dart';
 import 'package:bustracker/backend/SupaBaseDatabase.dart';
-import 'package:bustracker/data.dart';
+import 'package:bustracker/backend/data.dart';
 import 'package:flutter/material.dart';
 
 class NewRoutePage extends StatefulWidget {

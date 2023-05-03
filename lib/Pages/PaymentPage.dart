@@ -1,4 +1,5 @@
-import 'package:bustracker/TicketPage.dart';
+import 'package:bustracker/Pages/PostPayamentPage.dart';
+import 'package:bustracker/Pages/TicketPage.dart';
 import 'package:flutter/material.dart';
 
 class PayementPage extends StatefulWidget {
@@ -87,7 +88,7 @@ class PaymentMethodCard extends StatelessWidget {
         title: Text(title),
         trailing: GestureDetector(
           onTap: (){
-            Navigator.push(context, MaterialPageRoute(builder: (context)=>TicketPage()));
+            Navigator.push(context, MaterialPageRoute(builder: (context)=>PostPaymentPage()));
           },
           child: Icon(Icons.arrow_forward)),
       ),

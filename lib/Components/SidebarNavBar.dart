@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'Models/MenuItems.dart';
+import '../Models/MenuItems.dart';
 
 class SidenavBar extends StatefulWidget {
   var GetSelectedItem;
@@ -20,9 +20,9 @@ class _SidenavBarState extends State<SidenavBar> {
   var menuList = [
     MenuItem("Home", Icons.home),
     MenuItem("Settings", Icons.settings),
-    MenuItem("Profile", Icons.person),
-    MenuItem("Apply St Card", Icons.school),
-    MenuItem("Apply Other", Icons.book)
+ 
+    
+    MenuItem("Sign Out", Icons.book)
   ];
 
   Widget buildMenuItem(MenuItem item, int index) => ListTile(

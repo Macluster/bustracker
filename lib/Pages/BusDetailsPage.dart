@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:bustracker/Models/BusModel.dart';
-import 'package:bustracker/PaymentPage.dart';
+import 'package:bustracker/Pages/PaymentPage.dart';
 import 'package:flutter/material.dart';
 
 class BusDetailsPage extends StatefulWidget {
@@ -109,7 +109,7 @@ class DetailCard extends StatelessWidget {
           color: Color.fromARGB(255, 234, 232, 225),
           borderRadius: BorderRadius.all(Radius.circular(5))),
       child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        SizedBox(
+       const  SizedBox(
           width: 40,
         ),
         Icon(
@@ -123,7 +123,7 @@ class DetailCard extends StatelessWidget {
               style: Theme.of(context).textTheme.labelSmall,
               textAlign: TextAlign.center,
             )),
-        SizedBox(
+       const SizedBox(
           width: 40,
         ),
       ]),

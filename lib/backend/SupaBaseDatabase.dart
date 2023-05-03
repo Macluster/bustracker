@@ -1,8 +1,14 @@
 import 'package:bustracker/Models/BusModel.dart';
+import 'package:bustracker/Models/UserModel.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SupaBaseDatabase {
   final supabase = Supabase.instance.client;
+
+  void AddUserDetails(UserModel model)async
+  {
+     await supabase.from("Users").insert({"userName":model.userName,"userAdress":model.userAddress,"userPhone":model.userPhone,"userEmail":model.userEmail,"userDob":model.userDob});
+  }
 
   Future<List<BusModel>> GetBusData(int routeId, int currentBusStop) async {
     final data = await supabase
