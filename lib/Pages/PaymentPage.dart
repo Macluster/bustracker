@@ -22,19 +22,19 @@ class _PayementPageState extends State<PayementPage> {
                   "Select a payment Method",
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
-                SizedBox(
+              const   SizedBox(
                   height: 40,
                 ),
                 AmountoToPay(context),
-                SizedBox(
+             const   SizedBox(
                   height: 40,
                 ),
                 PaymentMethodCard("PayPal", 'assets/icons/paypal.png'),
-                SizedBox(
+            const    SizedBox(
                   height: 10,
                 ),
                 PaymentMethodCard("Visa", 'assets/icons/visa.png'),
-                SizedBox(
+            const    SizedBox(
                   height: 10,
                 ),
                 PaymentMethodCard("UPI", 'assets/icons/upi.png')

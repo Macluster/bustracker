@@ -1,5 +1,14 @@
+import 'package:bustracker/Models/BusModel.dart';
+import 'package:bustracker/Providers/UserProvider.dart';
+import 'package:bustracker/backend/SupaBaseDatabase.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+import '../Providers/PaymentProvider.dart';
 
 class PostPaymentPage extends StatelessWidget {
 
@@ -66,8 +75,15 @@ class PostPaymentPage extends StatelessWidget {
         
                 ),
                 GestureDetector(
-                  onTap: (){
-                    
+                  onTap: ()async{
+
+                      String email=Supabase.instance.client.auth.currentUser!.email as String;
+                  
+                       int id=await  SupaBaseDatabase().GetUserIdUsingEmail(email);
+                       var model=context.read<PayementProvider>().getPayementData();
+                      SupaBaseDatabase().Addpayement(id,model.busId,model.fare, model.from, model.to);
+
+
                   },
                   child: Container(
                     alignment: Alignment.center,

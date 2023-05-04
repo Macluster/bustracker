@@ -7,9 +7,12 @@ import 'package:bustracker/Components/DraweContainer.dart';
 import 'package:bustracker/Pages/EnterUserDetailsPage.dart';
 import 'package:bustracker/Pages/Homepage.dart';
 import 'package:bustracker/Pages/SignUpPage.dart';
+import 'package:bustracker/Providers/UserProvider.dart';
+import 'package:bustracker/backend/SupaBaseDatabase.dart';
 import 'package:bustracker/backend/SupabaseAuthentication.dart';
 import 'package:bustracker/main.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget
 {
@@ -48,10 +51,13 @@ class _LoginPageState extends State<LoginPage> {
       const SizedBox(height: 50,),
       GestureDetector(
 
-        onTap: (){
+        onTap: ()async{
           SupabaseAuthentication().LogIn(emailController.text, passwordController.text);
+
+          int id=await SupaBaseDatabase().GetUserIdUsingEmail(emailController.text);
+          context.read<UserProvider>().setCurrentUserId(id);
           
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>DrawerContainer()));
+          Navigator.push(context, MaterialPageRoute(builder: (context)=>DrawerContainer()));
         },
         child: Container(
           alignment: Alignment.center,
