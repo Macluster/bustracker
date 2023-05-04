@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:bustracker/Models/BusModel.dart';
 import 'package:bustracker/Models/UserModel.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -37,5 +39,37 @@ class SupaBaseDatabase {
     });
     
     return buslist;
+  }
+
+
+
+  Future<int> GetUserStopNameUsingid(String email)async
+    {
+
+      List data=await supabase.from("BusStops").select("busStopName").eq("userEmail",email ) as List ;
+      print("userId="+data[0]['userId'].toString());
+
+      return data[0]['userId'] as int;
+
+    }
+
+
+     Future<int> GetUserIdUsingEmail(String email)async
+    {
+
+      List data=await supabase.from("Users").select("userId").eq("userEmail",email ) as List ;
+      print("userId="+data[0]['userId'].toString());
+
+      return data[0]['userId'] as int;
+
+    }
+
+
+  void Addpayement(int userId,int busId, int fare,String from,String to)async
+  {
+    print("userid is "+from);
+    var result= await supabase.from("Payment").insert({"userId":userId,"busId":busId,"fromBusStop":from,"date":"fasf","toBusStop":to,"busFare":fare});
+    print(result.toString());
+  
   }
 }

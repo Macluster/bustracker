@@ -4,6 +4,9 @@ import 'package:bustracker/backend/FirebaseDatabase.dart';
 import 'package:bustracker/backend/SupaBaseDatabase.dart';
 import 'package:bustracker/backend/data.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../Providers/PaymentProvider.dart';
 
 class NewRoutePage extends StatefulWidget {
   @override
@@ -23,6 +26,10 @@ class _NewRoutePageState extends State<NewRoutePage> {
   Future<void> getRoute() async {
     var routes = await FirebaseDatabaseClass().GetRoute();
 
+    context.read<PayementProvider>().setfromBusStop(currentBusStop);
+    context.read<PayementProvider>().setToBusStop(destinationStop);
+    context.read<PayementProvider>().setFare(20);
+
     routes.asMap().forEach((index, route) {
       if (route.contains(currentBusStop) && route.contains(destinationStop)) {
         routeIndex = index;
@@ -38,8 +45,12 @@ class _NewRoutePageState extends State<NewRoutePage> {
     });
   }
 
+
+
   void getBusesInMyRoute() async {
     var buses = await SupaBaseDatabase().GetBusData(1, 4);
+
+  
 
     buses.forEach((element) {
       print(element);
@@ -224,6 +235,9 @@ class BusCard extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                         builder: (context) => BusDetailsPage(model)));
+
+
+                        context.read<PayementProvider>().setBusId(model.busId);
               },
               child: Container(
                 alignment: Alignment.center,
