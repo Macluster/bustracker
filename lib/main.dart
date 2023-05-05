@@ -25,12 +25,16 @@ void main() async {
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9nd2JzYXdkZnJmcmFnbmp3cmh1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODI2MTIxNzcsImV4cCI6MTk5ODE4ODE3N30.K-QINUpml_pmIyvgsWZfmEC_RtfW-t7Ewz8v-SCbvqg',
   );
 
-  runApp(MultiProvider(providers: [
-    ChangeNotifierProvider(create: (_)=>UserProvider(),),
-     ChangeNotifierProvider(create: (_)=>PayementProvider(),)
-  ],
-  
-  child: MyApp(),
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(
+        create: (_) => UserProvider(),
+      ),
+      ChangeNotifierProvider(
+        create: (_) => PayementProvider(),
+      )
+    ],
+    child: MyApp(),
   ));
 }
 
@@ -80,21 +84,16 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
- 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
-     
         backgroundColor: Colors.amber,
         resizeToAvoidBottomInset: false,
-        body:Supabase.instance.client.auth.currentUser!=null? DrawerContainer():LoginPage());
+        body: Supabase.instance.client.auth.currentUser != null
+            ? DrawerContainer()
+            : LoginPage());
   }
 }
-
-
-
 
 class SignInCard extends StatelessWidget {
   String imageLink = "";

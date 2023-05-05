@@ -10,5 +10,17 @@ class FirebaseDatabaseClass {
   }
 
 
+   Future<String> getBusStopNameFromID(int busStopId,int routeIndex)async
+  {
+        final databaseRef = FirebaseDatabase.instance.ref();
+    var snap = await databaseRef.child('Routes').get();
+    var routes = snap.value as List;
+
+       return routes[routeIndex][busStopId].toString();
+       
+  }
+
+
+
   
 }

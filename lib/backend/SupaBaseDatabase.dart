@@ -2,6 +2,8 @@ import 'dart:ffi';
 
 import 'package:bustracker/Models/BusModel.dart';
 import 'package:bustracker/Models/UserModel.dart';
+import 'package:bustracker/backend/FirebaseDatabase.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SupaBaseDatabase {
@@ -24,13 +26,17 @@ class SupaBaseDatabase {
     List<BusModel> buslist = [];
 
     BusModel? model;
-    list.forEach((element) {
+    list.forEach((element) async{
+
+
+
+    String busStopName= await FirebaseDatabaseClass().getBusStopNameFromID(element['busCurrentLocation'], routeId);
       model = BusModel(
           element['busId'],
           element['busName'],
           element['busRoute'],
           element['busNumber'],
-          element['busCurrentLocation'],
+          busStopName,
           element['startStop'],
           element['endStop'],
           element['startingTime']);
