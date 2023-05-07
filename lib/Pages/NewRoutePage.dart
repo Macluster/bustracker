@@ -1,3 +1,4 @@
+import 'package:bustracker/Components/DropDownList.dart';
 import 'package:bustracker/Pages/BusDetailsPage.dart';
 import 'package:bustracker/Models/BusModel.dart';
 import 'package:bustracker/backend/FirebaseDatabase.dart';
@@ -45,12 +46,8 @@ class _NewRoutePageState extends State<NewRoutePage> {
     });
   }
 
-
-
   void getBusesInMyRoute() async {
-    var buses = await SupaBaseDatabase().GetBusData(1, 4);
-
-  
+    var buses = await SupaBaseDatabase().GetBusData(routeIndex, 3);
 
     buses.forEach((element) {
       print(element);
@@ -68,8 +65,9 @@ class _NewRoutePageState extends State<NewRoutePage> {
     screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
+      backgroundColor: Theme.of(context).primaryColorLight,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).primaryColorLight,
         foregroundColor: Colors.black,
         elevation: 0,
         leading: Icon(Icons.arrow_back),
@@ -85,60 +83,18 @@ class _NewRoutePageState extends State<NewRoutePage> {
             padding: const EdgeInsets.all(15),
             child: Column(
               children: [
-                Container(
-                    width: screenWidth - 10,
-                    child: DropdownButton(
-                        iconSize: 30,
-                        iconEnabledColor: Colors.white,
-                        hint: Text(
-                          currentBusStop == ""
-                              ? "Current Bus stop"
-                              : currentBusStop,
-                          style: Theme.of(context).textTheme.labelMedium,
-                        ),
-                        items: bustops
-                            .map((item) => DropdownMenuItem(
-                                  value: item['name'].toString(),
-                                  child: Text(
-                                    item['name'].toString(),
-                                    style:
-                                        Theme.of(context).textTheme.labelMedium,
-                                  ),
-                                ))
-                            .toList(),
-                        onChanged: (e) {
-                          setState(() {
-                            currentBusStop = e.toString();
-                          });
-                        })),
-                Container(
-                    width: screenWidth - 10,
-                    child: DropdownButton(
-                        iconSize: 30,
-                        iconEnabledColor: Colors.white,
-                        hint: Text(
-                          destinationStop == ""
-                              ? "Destination Bus stop"
-                              : destinationStop,
-                          style: Theme.of(context).textTheme.labelMedium,
-                        ),
-                        items: bustops
-                            .map((item) => DropdownMenuItem(
-                                  value: item['name'].toString(),
-                                  child: Text(
-                                    item['name'].toString(),
-                                    style:
-                                        Theme.of(context).textTheme.labelMedium,
-                                  ),
-                                ))
-                            .toList(),
-                        onChanged: (e) async {
-                          setState(() {
-                            destinationStop = e.toString();
-                          });
-                          await getRoute();
-                          getBusesInMyRoute();
-                        })),
+                DropDownList(bustops, currentBusStop, "Current Bus stop", (e) {
+                  setState(() {
+                    currentBusStop = e.toString();
+                  });
+                }),
+                DropDownList(bustops,destinationStop, "Destination Bus stop", (e) async {
+                  setState(() {
+                    destinationStop = e.toString();
+                  });
+                  await getRoute();
+                  getBusesInMyRoute();
+                }),
                 const SizedBox(
                   height: 20,
                 ),
@@ -201,7 +157,7 @@ class BusCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
-          color: Color.fromARGB(255, 236, 222, 221),
+          color: Color.fromARGB(255, 255, 255, 255),
           borderRadius: BorderRadius.all(Radius.circular(10))),
       margin: EdgeInsets.only(top: 10),
       alignment: Alignment.topLeft,
@@ -224,7 +180,7 @@ class BusCard extends StatelessWidget {
                   height: 10,
                 ),
                 Text(
-                  "Current Location: KannadiKadu bus stop",
+                  "Current Location: " + model.busCurrentLocation,
                   style: Theme.of(context).textTheme.bodySmall,
                 )
               ],
@@ -236,8 +192,7 @@ class BusCard extends StatelessWidget {
                     MaterialPageRoute(
                         builder: (context) => BusDetailsPage(model)));
 
-
-                        context.read<PayementProvider>().setBusId(model.busId);
+                context.read<PayementProvider>().setBusId(model.busId);
               },
               child: Container(
                 alignment: Alignment.center,

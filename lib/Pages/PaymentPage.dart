@@ -11,6 +11,7 @@ class _PayementPageState extends State<PayementPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).primaryColorLight,
       body: SizedBox(
         width: double.infinity,
         child: SafeArea(
@@ -78,7 +79,7 @@ class PaymentMethodCard extends StatelessWidget {
     return Container(
       width: double.infinity,
       height: 60,
-      decoration: BoxDecoration(color: Color.fromARGB(255, 246, 234, 234)),
+      decoration: BoxDecoration(color: Colors.white),
       child: ListTile(
         leading: Image.asset(
           icon,

@@ -1,7 +1,13 @@
+import 'package:bustracker/Models/MyRouteModel.dart';
 import 'package:bustracker/Pages/LoginPage.dart';
 import 'package:bustracker/Pages/NewRoutePage.dart';
+import 'package:bustracker/backend/SupaBaseDatabase.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+import '../Components/DropDownList.dart';
+import '../backend/data.dart';
 
 class Homepage extends StatefulWidget {
   @override
@@ -9,12 +15,30 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
+  List<MyRouteModel> myRouteslist = [];
+  String currentBusStop = "";
+  String destinationStop = "";
+
+  getMyRoutes() async {
+    myRouteslist = await SupaBaseDatabase().getMyroutes();
+    print(myRouteslist);
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    getMyRoutes();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).primaryColorLight,
       appBar: AppBar(
         foregroundColor: Colors.black,
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).primaryColorLight,
         elevation: 0,
         title: Text(
           "BUS TRACKER",
@@ -24,7 +48,7 @@ class _HomepageState extends State<Homepage> {
             onTap: () {
               ZoomDrawer.of(context)!.toggle();
             },
-            child:const  Icon(Icons.menu)),
+            child: const Icon(Icons.menu)),
       ),
       body: SafeArea(
         child: SizedBox(
@@ -41,21 +65,74 @@ class _HomepageState extends State<Homepage> {
                       const SizedBox(
                         height: 20,
                       ),
-                      Text(
-                        "My routes",
-                        style: Theme.of(context).textTheme.titleMedium,
+                      Row(
+                        children: [
+                          Text(
+                            "My routes",
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                          const SizedBox(
+                            width: 30,
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return SimpleDialog(
+                                      title: Text("Add Route"),
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.all(15),
+                                          child: Column(
+                                            children: [
+                                              DropDownList(bustops, currentBusStop,
+                                                  "Current Bus stop", (e) {
+                                                setState(() {
+                                                  currentBusStop = e.toString();
+                                                });
+                                              }),
+                                              DropDownList(bustops, destinationStop,
+                                              "Destination Bus stop", (e) async {
+                                            setState(() {
+                                              destinationStop = e.toString();
+                                            });
+                                          }),
+                                            ],
+                                          ),
+                                        ),
+                                        
+                                      ],
+                                    );
+                                  });
+                            },
+                            child: Container(
+                              alignment: Alignment.center,
+                              height: 30,
+                              width: 30,
+                              decoration: const BoxDecoration(
+                                  color: Colors.amber,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10))),
+                              child: Icon(
+                                Icons.edit,
+                                size: 20,
+                              ),
+                            ),
+                          )
+                        ],
                       ),
                       const SizedBox(
-                        height: 10,
+                        height: 20,
                       ),
                       Container(
                         height: 150,
                         width: double.infinity,
                         child: ListView.builder(
                             scrollDirection: Axis.horizontal,
-                            itemCount: 2,
+                            itemCount: myRouteslist.length,
                             itemBuilder: (context, index) {
-                              return MyRoutesCard();
+                              return MyRoutesCard(myRouteslist[index]);
                             }),
                       ),
                       const SizedBox(
@@ -113,6 +190,8 @@ class _HomepageState extends State<Homepage> {
 var myroutesList = [];
 
 class MyRoutesCard extends StatelessWidget {
+  MyRouteModel model;
+  MyRoutesCard(this.model);
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -133,7 +212,7 @@ class MyRoutesCard extends StatelessWidget {
             height: 20,
           ),
           Text(
-            "Kundanoor to Kalamaserry",
+            model.sartingStopName + "->" + model.destinationStopName,
             style: Theme.of(context).textTheme.bodySmall,
             textAlign: TextAlign.center,
           )
@@ -153,7 +232,7 @@ class MyTripCard extends StatelessWidget {
         width: 220,
         margin: EdgeInsets.only(right: 10),
         decoration: const BoxDecoration(
-            color: Color.fromARGB(255, 246, 232, 232),
+            color: Colors.white,
             borderRadius: BorderRadius.all(Radius.circular(10))),
         child: Padding(
           padding: const EdgeInsets.all(15),

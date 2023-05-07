@@ -16,29 +16,17 @@ class _BusDetailsPageState extends State<BusDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 147, 137, 154),
-      body: SizedBox(
+            body: SizedBox(
         width: double.infinity,
         child: Padding(
-          padding: const EdgeInsets.all(0),
+          padding: const EdgeInsets.all(20),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Column(
                 children: [
-                  BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                    child: Container(
-                      alignment: Alignment.center,
-                      width: double.infinity,
-                      decoration: const BoxDecoration(
-                          image: DecorationImage(
-                              fit: BoxFit.cover,
-                              image: AssetImage("assets/icons/morning.png"))),
-                      height: 400,
-                      child: BackdropFilter(
-                        filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                        child: Text(
+                  SizedBox(height: 100,),
+                 Text(
                           widget.model.busName + " Bus",
                           style: const TextStyle(
                               shadows: [
@@ -49,15 +37,13 @@ class _BusDetailsPageState extends State<BusDetailsPage> {
                               ],
                               fontSize: 50,
                               fontWeight: FontWeight.bold,
-                              color: Colors.white),
+                              color: Color.fromARGB(255, 58, 57, 57)),
                         ),
-                      ),
-                    ),
-                  ),
+                   
                   const SizedBox(
                     height: 30,
                   ),
-                  DetailCard("kalamassery Bus Stop", Icons.location_on),
+                  DetailCard(widget.model.busCurrentLocation, Icons.location_on),
                   const SizedBox(
                     height: 10,
                   ),
@@ -106,27 +92,14 @@ class DetailCard extends StatelessWidget {
       height: 60,
       width: (screenWidth) - 30,
       decoration: const BoxDecoration(
-          color: Color.fromARGB(255, 234, 232, 225),
+        boxShadow: [BoxShadow(blurRadius: 3,color: Color.fromARGB(255, 240, 232, 232),spreadRadius: 2)],
+          color: Color.fromARGB(255, 255, 255, 255),
           borderRadius: BorderRadius.all(Radius.circular(5))),
-      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-       const  SizedBox(
-          width: 40,
-        ),
-        Icon(
-          icon,
-          size: 30,
-        ),
-        Container(
-            width: 200,
-            child: Text(
+      child:ListTile(leading: Icon(icon),title: Text(
               content,
               style: Theme.of(context).textTheme.labelSmall,
-              textAlign: TextAlign.center,
-            )),
-       const SizedBox(
-          width: 40,
-        ),
-      ]),
+          
+            ),)
     );
   }
 }

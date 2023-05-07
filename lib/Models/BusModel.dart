@@ -3,7 +3,7 @@ class BusModel {
   int busId = 0;
   int busroute = 0;
   String busNumber = "";
-  int busCurrentLocation = 0;
+  String busCurrentLocation = "";
   int startStop = 0;
   int endStop = 0;
   String startingTime = "";

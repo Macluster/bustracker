@@ -4,6 +4,7 @@ class TicketPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).primaryColorLight,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(15),

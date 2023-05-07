@@ -9,6 +9,14 @@ class FirebaseDatabaseClass {
     return data;
   }
 
+   Future<List<dynamic>> getBusStopNameFromID()async
+  {
+        final databaseRef = FirebaseDatabase.instance.ref();
+    var snap = await databaseRef.child('Routes').get();
+    var routes = snap.value as List;
 
+       return routes;
+       
+  }
   
 }

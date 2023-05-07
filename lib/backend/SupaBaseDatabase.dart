@@ -1,8 +1,11 @@
-import 'dart:ffi';
+
 
 import 'package:bustracker/Models/BusModel.dart';
 import 'package:bustracker/Models/UserModel.dart';
+import 'package:bustracker/backend/FirebaseDatabase.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+
+import '../Models/MyRouteModel.dart';
 
 class SupaBaseDatabase {
   final supabase = Supabase.instance.client;
@@ -12,25 +15,29 @@ class SupaBaseDatabase {
      await supabase.from("Users").insert({"userName":model.userName,"userAdress":model.userAddress,"userPhone":model.userPhone,"userEmail":model.userEmail,"userDob":model.userDob});
   }
 
-  Future<List<BusModel>> GetBusData(int routeId, int currentBusStop) async {
+  Future<List<BusModel>> GetBusData(int routeId, int currentBusStopOfUser) async {
     final data = await supabase
         .from('Buses')
         .select()
         .eq("busRoute", routeId)
-        .gt("busCurrentLocation", currentBusStop);
+        .gt("busCurrentLocation", currentBusStopOfUser);
 
     var list = data as List;
 
     List<BusModel> buslist = [];
 
     BusModel? model;
-    list.forEach((element) {
+          var routes=await FirebaseDatabaseClass().getBusStopNameFromID();
+
+    list.forEach((element)async{
+var busStopName=routes[routeId][ element['busCurrentLocation']].toString();
+    
       model = BusModel(
           element['busId'],
           element['busName'],
           element['busRoute'],
           element['busNumber'],
-          element['busCurrentLocation'],
+        busStopName,
           element['startStop'],
           element['endStop'],
           element['startingTime']);
@@ -72,4 +79,31 @@ class SupaBaseDatabase {
     print(result.toString());
   
   }
+
+   Future<List<MyRouteModel>>  getMyroutes()async
+   {
+
+      var email=Supabase.instance.client.auth.currentUser!.email;
+      var userId=await GetUserIdUsingEmail(email.toString());
+  
+   List<MyRouteModel> routelist=[];
+      var result=await supabase.from('MyRoutes').select().eq('userId', userId) as List;
+
+       
+
+       var model=MyRouteModel(1,2,2," "," ");
+       
+
+       result.forEach((element) {
+     print(element['sartingStopName']);
+        model=MyRouteModel(element['myRouteId'], element['userId'], element['routeId'],element['startingStopName'], element['destinationStopName']);
+            
+          routelist.add(model);
+              print("iseaasfaf"+userId.toString());
+       });
+
+   
+      return routelist;
+
+   }
 }

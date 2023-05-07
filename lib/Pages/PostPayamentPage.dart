@@ -26,6 +26,7 @@ class PostPaymentPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).primaryColorLight,
       body: SizedBox(
         width: double.infinity,
         child: SafeArea(

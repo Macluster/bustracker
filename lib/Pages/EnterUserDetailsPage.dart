@@ -18,6 +18,7 @@ class _EnterUserDetailsPageState extends State<EnterUserDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).primaryColorLight,
       resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: SizedBox(

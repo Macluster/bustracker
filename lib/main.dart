@@ -44,6 +44,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+      primaryColorLight: Color.fromARGB(255, 241, 240, 240),
         textTheme: const TextTheme(
             titleLarge: TextStyle(
               fontSize: 30,
