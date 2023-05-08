@@ -54,7 +54,7 @@ class _LoginPageState extends State<LoginPage> {
         onTap: ()async{
           SupabaseAuthentication().LogIn(emailController.text, passwordController.text);
 
-          int id=await SupaBaseDatabase().GetUserIdUsingEmail(emailController.text);
+          int id=await SupaBaseDatabase().getCurrentUserId();
           context.read<UserProvider>().setCurrentUserId(id);
           
           Navigator.push(context, MaterialPageRoute(builder: (context)=>DrawerContainer()));

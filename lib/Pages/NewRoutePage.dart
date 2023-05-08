@@ -25,24 +25,16 @@ class _NewRoutePageState extends State<NewRoutePage> {
   int routeIndex = 0;
 
   Future<void> getRoute() async {
-    var routes = await FirebaseDatabaseClass().GetRoute();
+    var routes = await FirebaseDatabaseClass()
+        .gerRouteIdAndBusStops(currentBusStop, destinationStop);
 
     context.read<PayementProvider>().setfromBusStop(currentBusStop);
     context.read<PayementProvider>().setToBusStop(destinationStop);
     context.read<PayementProvider>().setFare(20);
 
-    routes.asMap().forEach((index, route) {
-      if (route.contains(currentBusStop) && route.contains(destinationStop)) {
-        routeIndex = index;
-        print(routeIndex);
-        int currentstopIndex = route.indexOf(currentBusStop);
-        int destinationStopIndex = route.indexOf(destinationStop);
-        for (int i = currentstopIndex; i <= destinationStopIndex; i++) {
-          myRoot.add(routes[routeIndex][i]);
-        }
-
-        setState(() {});
-      }
+    setState(() {
+      myRoot = routes['busStops'];
+      routeIndex = routes['routeIndex'];
     });
   }
 
@@ -88,7 +80,8 @@ class _NewRoutePageState extends State<NewRoutePage> {
                     currentBusStop = e.toString();
                   });
                 }),
-                DropDownList(bustops,destinationStop, "Destination Bus stop", (e) async {
+                DropDownList(bustops, destinationStop, "Destination Bus stop",
+                    (e) async {
                   setState(() {
                     destinationStop = e.toString();
                   });

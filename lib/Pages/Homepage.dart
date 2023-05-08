@@ -1,3 +1,5 @@
+import 'package:bustracker/Components/Button1.dart';
+import 'package:bustracker/Components/Button2.dart';
 import 'package:bustracker/Models/MyRouteModel.dart';
 import 'package:bustracker/Pages/LoginPage.dart';
 import 'package:bustracker/Pages/NewRoutePage.dart';
@@ -24,6 +26,8 @@ class _HomepageState extends State<Homepage> {
     print(myRouteslist);
     setState(() {});
   }
+
+  
 
   @override
   void initState() {
@@ -80,28 +84,46 @@ class _HomepageState extends State<Homepage> {
                                   context: context,
                                   builder: (context) {
                                     return SimpleDialog(
-                                      title: Text("Add Route"),
+                                      title: Text(
+                                        "Add Route",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleMedium,
+                                      ),
                                       children: [
                                         Padding(
                                           padding: const EdgeInsets.all(15),
                                           child: Column(
                                             children: [
-                                              DropDownList(bustops, currentBusStop,
+                                              DropDownList(
+                                                  bustops,
+                                                  currentBusStop,
                                                   "Current Bus stop", (e) {
+                                                     currentBusStop = e.toString();
                                                 setState(() {
-                                                  currentBusStop = e.toString();
+                                                 
                                                 });
                                               }),
-                                              DropDownList(bustops, destinationStop,
-                                              "Destination Bus stop", (e) async {
-                                            setState(() {
-                                              destinationStop = e.toString();
-                                            });
-                                          }),
+                                              DropDownList(
+                                                  bustops,
+                                                  destinationStop,
+                                                  "Destination Bus stop",
+                                                  (e) async {
+                                                setState(() {
+                                                  destinationStop =
+                                                      e.toString();
+                                                });
+                                              }),
+                                              SizedBox(
+                                                height: 40,
+                                              ),
+                                              Button2("Submit", ()async {
+
+                                               await  SupaBaseDatabase().AddMyRoute(currentBusStop, destinationStop);
+                                              })
                                             ],
                                           ),
                                         ),
-                                        
                                       ],
                                     );
                                   });

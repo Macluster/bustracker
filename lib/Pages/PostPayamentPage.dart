@@ -78,9 +78,9 @@ class PostPaymentPage extends StatelessWidget {
                 GestureDetector(
                   onTap: ()async{
 
-                      String email=Supabase.instance.client.auth.currentUser!.email as String;
+               
                   
-                       int id=await  SupaBaseDatabase().GetUserIdUsingEmail(email);
+                       int id=await  SupaBaseDatabase().getCurrentUserId();
                        var model=context.read<PayementProvider>().getPayementData();
                       SupaBaseDatabase().Addpayement(id,model.busId,model.fare, model.from, model.to);
 
