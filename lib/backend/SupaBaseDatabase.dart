@@ -1,3 +1,5 @@
+
+
 import 'package:bustracker/Models/BusModel.dart';
 import 'package:bustracker/Models/UserModel.dart';
 import 'package:bustracker/backend/FirebaseDatabase.dart';
@@ -7,6 +9,13 @@ import '../Models/MyRouteModel.dart';
 
 class SupaBaseDatabase {
   final supabase = Supabase.instance.client;
+
+
+
+
+
+ 
+
 
   void AddUserDetails(UserModel model) async {
     await supabase.from("Users").insert({
@@ -88,17 +97,26 @@ class SupaBaseDatabase {
     print(result.toString());
   }
 
-  Future<List<MyRouteModel>> getMyroutes() async {
 
-    var userId = await getCurrentUserId();
+  Stream GetMyRouteStream(int userId)
+  {
+    
+    
+   return supabase.from('MyRoutes').stream(primaryKey:["myRouteId"]).eq('userId', userId).map((event){
+   
+    return event;});
+  }
+List<MyRouteModel> getMyroutes(var snap)  {
+
+
 
     List<MyRouteModel> routelist = [];
-    var result =
-        await supabase.from('MyRoutes').select().eq('userId', userId) as List;
+      var model = MyRouteModel(1, 2, 2, " ", " ");
+   // var result =
+    //    await supabase.from('MyRoutes').select().eq('userId', userId) as List;
+   
 
-    var model = MyRouteModel(1, 2, 2, " ", " ");
-
-    result.forEach((element) {
+    snap.forEach((element) {
       print(element['sartingStopName']);
       model = MyRouteModel(
           element['myRouteId'],
@@ -108,8 +126,13 @@ class SupaBaseDatabase {
           element['destinationStopName']);
 
       routelist.add(model);
-      print("iseaasfaf" + userId.toString());
+    
     });
+
+      
+
+  
+
 
     return routelist;
   }

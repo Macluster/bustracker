@@ -3,9 +3,11 @@ import 'package:bustracker/Components/Button2.dart';
 import 'package:bustracker/Models/MyRouteModel.dart';
 import 'package:bustracker/Pages/LoginPage.dart';
 import 'package:bustracker/Pages/NewRoutePage.dart';
+import 'package:bustracker/Providers/UserProvider.dart';
 import 'package:bustracker/backend/SupaBaseDatabase.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
+import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../Components/DropDownList.dart';
@@ -22,17 +24,15 @@ class _HomepageState extends State<Homepage> {
   String destinationStop = "";
 
   getMyRoutes() async {
-    myRouteslist = await SupaBaseDatabase().getMyroutes();
+   // myRouteslist = await SupaBaseDatabase().getMyroutes();
     print(myRouteslist);
     setState(() {});
   }
 
-  
-
   @override
   void initState() {
     // TODO: implement initState
-    getMyRoutes();
+    //getMyRoutes();
     super.initState();
   }
 
@@ -99,10 +99,8 @@ class _HomepageState extends State<Homepage> {
                                                   bustops,
                                                   currentBusStop,
                                                   "Current Bus stop", (e) {
-                                                     currentBusStop = e.toString();
-                                                setState(() {
-                                                 
-                                                });
+                                                currentBusStop = e.toString();
+                                                setState(() {});
                                               }),
                                               DropDownList(
                                                   bustops,
@@ -114,12 +112,13 @@ class _HomepageState extends State<Homepage> {
                                                       e.toString();
                                                 });
                                               }),
-                                              SizedBox(
+                                              const SizedBox(
                                                 height: 40,
                                               ),
-                                              Button2("Submit", ()async {
-
-                                               await  SupaBaseDatabase().AddMyRoute(currentBusStop, destinationStop);
+                                              Button2("Submit", () async {
+                                                await SupaBaseDatabase()
+                                                    .AddMyRoute(currentBusStop,
+                                                        destinationStop);
                                               })
                                             ],
                                           ),
@@ -136,7 +135,7 @@ class _HomepageState extends State<Homepage> {
                                   color: Colors.amber,
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(10))),
-                              child: Icon(
+                              child: const Icon(
                                 Icons.edit,
                                 size: 20,
                               ),
@@ -147,16 +146,32 @@ class _HomepageState extends State<Homepage> {
                       const SizedBox(
                         height: 20,
                       ),
-                      Container(
+                      StreamBuilder(
+                        stream:   SupaBaseDatabase().GetMyRouteStream(context.read<UserProvider>().getUserId()) ,
+                        builder: (context,AsyncSnapshot snap){
+                          print("dataaa=");
+                          print(snap.data);
+                          if(snap.hasData)
+                          {
+                                  List data=SupaBaseDatabase().getMyroutes(snap.data);
+                        return   Container(
                         height: 150,
                         width: double.infinity,
                         child: ListView.builder(
                             scrollDirection: Axis.horizontal,
-                            itemCount: myRouteslist.length,
+                            itemCount: data.length,
                             itemBuilder: (context, index) {
-                              return MyRoutesCard(myRouteslist[index]);
+                              return MyRoutesCard(data[index]);
                             }),
-                      ),
+                      );
+                          }
+                          else
+                          {
+                            return Text("No Data");
+                          }
+                       
+                      }),
+                    
                       const SizedBox(
                         height: 30,
                       ),

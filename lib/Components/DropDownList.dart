@@ -42,6 +42,7 @@ class _DropDownListState extends State<DropDownList> {
                             .toList(),
                         onChanged: (e) {
                           setState(() {
+                            widget.content=e.toString();
                             widget.onChangedFun(e.toString());
                            
                           });

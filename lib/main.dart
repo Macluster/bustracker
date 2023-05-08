@@ -81,6 +81,19 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    setuserId();
+  }
+
+  setuserId()async
+  {
+   
+    var id=await SupaBaseDatabase().getCurrentUserId();
+    context.read<UserProvider>().setCurrentUserId(id);
+  }
  
 
   @override
