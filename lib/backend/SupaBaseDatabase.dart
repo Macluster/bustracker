@@ -54,11 +54,11 @@ class SupaBaseDatabase {
 
     var date=DateTime.now();
     var weekday=date.weekday;
-    var mydate=date.day.toString()+"/"+date.month.toString()+"/"+date.year.toString();
-    var dateFormat=GetWeekDayName(weekday)+" "+mydate;
+    var mydate="${date.day}/${date.month}/${date.year}";
+    var dateFormat="${GetWeekDayName(weekday)} $mydate";
 
     print("userid is " + from);
-    var result = await supabase.from("Payment").insert({"userId": userId, "busId": busId, "fromBusStop": from, "date": weekday.toString()+" "+mydate, "toBusStop": to, "busFare": fare});
+    var result = await supabase.from("Payment").insert({"userId": userId, "busId": busId, "fromBusStop": from, "date": dateFormat, "toBusStop": to, "busFare": fare});
     print(result.toString());
   }
 
@@ -101,8 +101,13 @@ class SupaBaseDatabase {
     PayementModel model = PayementModel(1, 1, 1, "", "", 1,"");
 
     List<PayementModel> list = [];
+  
 
     result.forEach((element) {
+    
+
+
+
       model = PayementModel(element['paymentId'], element['busId'], element['userId'], element['fromBusStop'], element['toBusStop'], element['busFare'],element["date"]);
 
       list.add(model);

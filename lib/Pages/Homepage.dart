@@ -219,7 +219,13 @@ class MyRoutesCard extends StatelessWidget {
             height: 20,
           ),
           Text(
-            model.sartingStopName + "->" + model.destinationStopName,
+            model.sartingStopName ,
+            style: Theme.of(context).textTheme.bodySmall,
+            textAlign: TextAlign.center,
+          ),
+          Icon(Icons.arrow_downward),
+              Text(
+            model.sartingStopName ,
             style: Theme.of(context).textTheme.bodySmall,
             textAlign: TextAlign.center,
           )
