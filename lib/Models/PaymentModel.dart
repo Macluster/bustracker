@@ -9,8 +9,9 @@ class PayementModel
   String from;
   String to;
   int fare;
+  String date;
 
-  PayementModel(this.payementId,this.busId,this.userId,this.from,this.to,this.fare);
+  PayementModel(this.payementId,this.busId,this.userId,this.from,this.to,this.fare,this.date);
 
 
 }

@@ -1,6 +1,7 @@
 import 'package:bustracker/Components/Button1.dart';
 import 'package:bustracker/Components/Button2.dart';
 import 'package:bustracker/Models/MyRouteModel.dart';
+import 'package:bustracker/Models/PaymentModel.dart';
 import 'package:bustracker/Pages/LoginPage.dart';
 import 'package:bustracker/Pages/NewRoutePage.dart';
 import 'package:bustracker/Providers/UserProvider.dart';
@@ -11,6 +12,7 @@ import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../Components/DropDownList.dart';
+import '../Components/IconButton1.dart';
 import '../backend/data.dart';
 
 class Homepage extends StatefulWidget {
@@ -24,7 +26,7 @@ class _HomepageState extends State<Homepage> {
   String destinationStop = "";
 
   getMyRoutes() async {
-   // myRouteslist = await SupaBaseDatabase().getMyroutes();
+    // myRouteslist = await SupaBaseDatabase().getMyroutes();
     print(myRouteslist);
     setState(() {});
   }
@@ -78,100 +80,40 @@ class _HomepageState extends State<Homepage> {
                           const SizedBox(
                             width: 30,
                           ),
-                          GestureDetector(
-                            onTap: () {
-                              showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return SimpleDialog(
-                                      title: Text(
-                                        "Add Route",
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .titleMedium,
-                                      ),
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.all(15),
-                                          child: Column(
-                                            children: [
-                                              DropDownList(
-                                                  bustops,
-                                                  currentBusStop,
-                                                  "Current Bus stop", (e) {
-                                                currentBusStop = e.toString();
-                                                setState(() {});
-                                              }),
-                                              DropDownList(
-                                                  bustops,
-                                                  destinationStop,
-                                                  "Destination Bus stop",
-                                                  (e) async {
-                                                setState(() {
-                                                  destinationStop =
-                                                      e.toString();
-                                                });
-                                              }),
-                                              const SizedBox(
-                                                height: 40,
-                                              ),
-                                              Button2("Submit", () async {
-                                                await SupaBaseDatabase()
-                                                    .AddMyRoute(currentBusStop,
-                                                        destinationStop);
-                                              })
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    );
-                                  });
+                          IconButton1(
+                            icon: Icons.edit,
+                            ontap: () {
+                              DialogeBox();
                             },
-                            child: Container(
-                              alignment: Alignment.center,
-                              height: 30,
-                              width: 30,
-                              decoration: const BoxDecoration(
-                                  color: Colors.amber,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(10))),
-                              child: const Icon(
-                                Icons.edit,
-                                size: 20,
-                              ),
-                            ),
                           )
                         ],
                       ),
                       const SizedBox(
                         height: 20,
                       ),
-                      StreamBuilder(
-                        stream:   SupaBaseDatabase().GetMyRouteStream(context.read<UserProvider>().getUserId()) ,
-                        builder: (context,AsyncSnapshot snap){
-                          print("dataaa=");
-                          print(snap.data);
-                          if(snap.hasData)
-                          {
-                                  List data=SupaBaseDatabase().getMyroutes(snap.data);
-                        return   Container(
-                        height: 150,
-                        width: double.infinity,
-                        child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: data.length,
-                            itemBuilder: (context, index) {
-                              return MyRoutesCard(data[index]);
-                            }),
-                      );
-                          }
-                          else
-                          {
-                            return Text("No Data");
-                          }
-                       
+                      Consumer<UserProvider>(builder: (context, data, child) {
+                        return StreamBuilder(
+                            stream: SupaBaseDatabase().GetMyRouteStream(data.getUserId()),
+                            builder: (context, AsyncSnapshot snap) {
+                              print("dataaa=");
+                              print(snap.data);
+                              if (snap.hasData) {
+                                List data = SupaBaseDatabase().getMyroutes(snap.data);
+                                return Container(
+                                  height: 150,
+                                  width: double.infinity,
+                                  child: ListView.builder(
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount: data.length,
+                                      itemBuilder: (context, index) {
+                                        return MyRoutesCard(data[index]);
+                                      }),
+                                );
+                              } else {
+                                return Text("No Data");
+                              }
+                            });
                       }),
-                    
                       const SizedBox(
                         height: 30,
                       ),
@@ -182,38 +124,31 @@ class _HomepageState extends State<Homepage> {
                       const SizedBox(
                         height: 20,
                       ),
-                      Container(
-                        height: 250,
-                        width: double.infinity,
-                        child: ListView.builder(
-                            itemCount: 2,
-                            itemBuilder: (context, index) {
-                              return MyTripCard();
-                            }),
-                      ),
+                      FutureBuilder(
+                          future: SupaBaseDatabase().getHistory(3),
+                          builder: (context, AsyncSnapshot<List<PayementModel>> snap) {
+                            if (snap.hasData) {
+                              return Container(
+                                height: 450,
+                                width: double.infinity,
+                                child: ListView.builder(
+                                    itemCount: snap.data!.length,
+                                    itemBuilder: (context, index) {
+                                      return MyTripCard(snap.data![index]);
+                                    }),
+                              );
+                            } else {
+                              return Text("No Data");
+                            }
+                          }),
                       const SizedBox(
                         height: 10,
                       ),
                     ],
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => NewRoutePage()));
-                    },
-                    child: Container(
-                      alignment: Alignment.center,
-                      height: 50,
-                      width: double.infinity,
-                      decoration: BoxDecoration(color: Colors.amber),
-                      child: Text(
-                        "New Route",
-                        style: Theme.of(context).textTheme.labelSmall,
-                      ),
-                    ),
-                  ),
+                  Button1("New Route", () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => NewRoutePage()));
+                  })
                 ],
               ),
             ),
@@ -221,6 +156,43 @@ class _HomepageState extends State<Homepage> {
         ),
       ),
     );
+  }
+
+  DialogeBox() {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return SimpleDialog(
+            title: Text(
+              "Add Route",
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(15),
+                child: Column(
+                  children: [
+                    DropDownList(bustops, currentBusStop, "Current Bus stop", (e) {
+                      currentBusStop = e.toString();
+                      setState(() {});
+                    }),
+                    DropDownList(bustops, destinationStop, "Destination Bus stop", (e) async {
+                      setState(() {
+                        destinationStop = e.toString();
+                      });
+                    }),
+                    const SizedBox(
+                      height: 40,
+                    ),
+                    Button2("Submit", () async {
+                      await SupaBaseDatabase().AddMyRoute(currentBusStop, destinationStop);
+                    })
+                  ],
+                ),
+              ),
+            ],
+          );
+        });
   }
 }
 
@@ -235,9 +207,7 @@ class MyRoutesCard extends StatelessWidget {
       height: 50,
       width: 120,
       margin: EdgeInsets.only(right: 10),
-      decoration: const BoxDecoration(
-          color: Colors.amber,
-          borderRadius: BorderRadius.all(Radius.circular(10))),
+      decoration: const BoxDecoration(color: Colors.amber, borderRadius: BorderRadius.all(Radius.circular(10))),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -260,6 +230,12 @@ class MyRoutesCard extends StatelessWidget {
 }
 
 class MyTripCard extends StatelessWidget {
+
+
+  PayementModel model;
+
+
+  MyTripCard(this.model);
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -268,9 +244,7 @@ class MyTripCard extends StatelessWidget {
         height: 100,
         width: 220,
         margin: EdgeInsets.only(right: 10),
-        decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.all(Radius.circular(10))),
+        decoration: const BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(10))),
         child: Padding(
           padding: const EdgeInsets.all(15),
           child: Column(
@@ -288,7 +262,7 @@ class MyTripCard extends StatelessWidget {
                     height: 20,
                   ),
                   Text(
-                    "Kundanoor to Kalamaserry",
+                    model.from+" to "+model.to,
                     style: Theme.of(context).textTheme.titleSmall,
                     textAlign: TextAlign.center,
                   )
@@ -299,8 +273,7 @@ class MyTripCard extends StatelessWidget {
                   const SizedBox(
                     width: 25,
                   ),
-                  Text("Tuesday, 12:15 AM  - 12:50",
-                      style: Theme.of(context).textTheme.labelSmall),
+                  Text(model.date, style: Theme.of(context).textTheme.labelSmall),
                 ],
               )
             ],

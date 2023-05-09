@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 class PayementProvider extends ChangeNotifier
 {
 
-PayementModel model=PayementModel(0,0,0, "","",20);
+PayementModel model=PayementModel(0,0,0, "","",20,"");
 
 
 PayementModel getPayementData()

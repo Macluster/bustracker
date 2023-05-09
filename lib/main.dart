@@ -25,6 +25,11 @@ void main() async {
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9nd2JzYXdkZnJmcmFnbmp3cmh1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODI2MTIxNzcsImV4cCI6MTk5ODE4ODE3N30.K-QINUpml_pmIyvgsWZfmEC_RtfW-t7Ewz8v-SCbvqg',
   );
 
+
+
+
+
+
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (_)=>UserProvider(),),
      ChangeNotifierProvider(create: (_)=>PayementProvider(),)
@@ -92,7 +97,9 @@ class _MyHomePageState extends State<MyHomePage> {
   {
    
     var id=await SupaBaseDatabase().getCurrentUserId();
+    
     context.read<UserProvider>().setCurrentUserId(id);
+  
   }
  
 
