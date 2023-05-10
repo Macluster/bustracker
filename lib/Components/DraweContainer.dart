@@ -1,3 +1,4 @@
+import 'package:bustracker/Pages/ApplyStCardd.dart';
 import 'package:bustracker/Pages/SettingsPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_zoom_drawer/config.dart';
@@ -17,7 +18,7 @@ class DrawerContainer extends StatefulWidget {
 class _DrawerContainerState extends State<DrawerContainer> {
   int currentItem = 0;
 
-  var pages = [Homepage(), SettingsPage(), Container()];
+  var pages = [Homepage(), SettingsPage(),ApplyStCard() ,Container()];
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,7 +30,7 @@ class _DrawerContainerState extends State<DrawerContainer> {
           setState(() {
             this.currentItem = item;
 
-            if (currentItem == 2) {
+            if (currentItem == 3) {
               SupabaseAuthentication().SignOut();
 
               Navigator.push(context,

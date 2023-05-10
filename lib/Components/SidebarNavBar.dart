@@ -20,7 +20,7 @@ class _SidenavBarState extends State<SidenavBar> {
   var menuList = [
     MenuItem("Home", Icons.home),
     MenuItem("Settings", Icons.settings),
- 
+     MenuItem("Apply St Card", Icons.settings),
     
     MenuItem("Sign Out", Icons.book)
   ];

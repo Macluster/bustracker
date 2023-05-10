@@ -51,11 +51,10 @@ class SupaBaseDatabase {
   }
 
   void Addpayement(int userId, int busId, int fare, String from, String to) async {
-
-    var date=DateTime.now();
-    var weekday=date.weekday;
-    var mydate="${date.day}/${date.month}/${date.year}";
-    var dateFormat="${GetWeekDayName(weekday)} $mydate";
+    var date = DateTime.now();
+    var weekday = date.weekday;
+    var mydate = "${date.day}/${date.month}/${date.year}";
+    var dateFormat = "${GetWeekDayName(weekday)} $mydate";
 
     print("userid is " + from);
     var result = await supabase.from("Payment").insert({"userId": userId, "busId": busId, "fromBusStop": from, "date": dateFormat, "toBusStop": to, "busFare": fare});
@@ -98,17 +97,12 @@ class SupaBaseDatabase {
   Future<List<PayementModel>> getHistory(int id) async {
     List result = await supabase.from("Payment").select().eq("userId", id);
 
-    PayementModel model = PayementModel(1, 1, 1, "", "", 1,"");
+    PayementModel model = PayementModel(1, 1, 1, "", "", 1, "");
 
     List<PayementModel> list = [];
-  
 
     result.forEach((element) {
-    
-
-
-
-      model = PayementModel(element['paymentId'], element['busId'], element['userId'], element['fromBusStop'], element['toBusStop'], element['busFare'],element["date"]);
+      model = PayementModel(element['paymentId'], element['busId'], element['userId'], element['fromBusStop'], element['toBusStop'], element['busFare'], element["date"]);
 
       list.add(model);
     });

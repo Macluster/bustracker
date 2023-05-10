@@ -15,10 +15,11 @@ class Button1 extends StatelessWidget
                             ontap();
                           },
                           child: Container(
+                            decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(20)),color: Colors.amber,),
                             alignment: Alignment.center,
                             height: 60,
                             width: double.infinity,
-                            color: Colors.amber,
+                         
                             child: Text(content),
                           ),
                         );

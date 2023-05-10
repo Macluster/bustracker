@@ -35,6 +35,7 @@ dependencies:
   supabase_flutter:
   drop_shadow_image:
   provider:
+  file_picker:
 
 
   # The following adds the Cupertino Icons font to your application.
