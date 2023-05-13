@@ -1,5 +1,6 @@
 import 'package:bustracker/Models/BusModel.dart';
 import 'package:bustracker/Models/PaymentModel.dart';
+import 'package:bustracker/Models/StCardModel.dart';
 import 'package:bustracker/Models/UserModel.dart';
 import 'package:bustracker/backend/FirebaseDatabase.dart';
 import 'package:bustracker/functions/GetWeekDayname.dart';
@@ -108,5 +109,38 @@ class SupaBaseDatabase {
     });
 
     return list;
+  }
+
+  AddStCardDetails(StCardModel model) async {
+    await supabase.from("StCard").insert({"userId": model.userId, "institutionName": model.institutionName, "institutionPlace": model.institutionPlace, "address": model.address, "issueDate": model.issueDate, "expiryDate": model.expiryDate, "status": model.status});
+  }
+
+  Future<String> GetStatusOFStCard() async {
+    var userId = await getCurrentUserId();
+    var result = await supabase.from("StCard").select("status").eq("userId", userId);
+    print(result[0]["status"]);
+    return result[0]["status"];
+  }
+
+  Future<int> GetStIDOFStCard() async {
+    var userId = await getCurrentUserId();
+    var result = await supabase.from("StCard").select("stId").eq("userId", userId);
+    print(result[0]["stId"]);
+    return result[0]["stId"];
+  }
+
+  AddToStudentRoutes(int stId,String t1, String d1, String t2, String d2) async{
+
+    await supabase.from("StudentRoutes").insert({"stId":stId,"from":t1,"to":d1});
+    await supabase.from("StudentRoutes").insert({"stId":stId,"from":t2,"to":d2});
+  }
+
+  Future<StCardModel> GetStCardDetails()async
+  {
+        var userId = await getCurrentUserId();
+       var result = await supabase.from("StCard").select().eq("userId", userId);
+       print("jjj");
+
+       return StCardModel(userId, result[0]["institutionName"],result[0]["institutionPlace"] ,result[0]["address"], result[0]["issueDate"], result[0]["expiryDate"], result[0]["status"]);
   }
 }

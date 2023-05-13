@@ -1,4 +1,8 @@
 import 'package:bustracker/Components/Button1.dart';
+import 'package:bustracker/Pages/AddStCardDetails.dart';
+import 'package:bustracker/Pages/ShowStCardPage.dart';
+import 'package:bustracker/Pages/StCardReviewPage.dart';
+import 'package:bustracker/backend/SupaBaseDatabase.dart';
 import 'package:bustracker/backend/SupaBaseStorage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,8 +13,8 @@ class ApplyStCard extends StatefulWidget {
 }
 
 class _ApplyStCardState extends State<ApplyStCard> {
-  bool isDoneUploadingBirth = false;
-  bool isDoneUploadingIdcard = false;
+  bool isDoneUploadingPhoto = false;
+  bool isDoneUploadingForm = false;
 
   @override
   void initState() {
@@ -20,12 +24,21 @@ class _ApplyStCardState extends State<ApplyStCard> {
   }
 
   void initialise() async {
- var birth = await SupabaseStorage().checkItemExist("birthCertificate.jpg");
-   var id = await SupabaseStorage().checkItemExist("IdCard.jpg");
-    setState(() {
-        isDoneUploadingBirth=birth;
-        isDoneUploadingIdcard=id;
+    var isDoneReview = await SupaBaseDatabase().GetStatusOFStCard();
+    if (isDoneReview == "pending") {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => StCardReviewPage("pending")));
+    } else if (isDoneReview == "done") {
+      Navigator.push(context, MaterialPageRoute(builder: (context)=>ShowStCardPage()));
+    } else if (isDoneReview != "inprogress") //Condition When  there is a problem with  application so vale of isDonereview will be the problem with  the application
+    {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => StCardReviewPage(isDoneReview)));
+    }
 
+    var birth = await SupabaseStorage().checkItemExist("Photo.jpg");
+    var id = await SupabaseStorage().checkItemExist("Form.jpg");
+    setState(() {
+      isDoneUploadingPhoto = birth;
+      isDoneUploadingForm = id;
     });
   }
 
@@ -54,30 +67,32 @@ class _ApplyStCardState extends State<ApplyStCard> {
                       height: 50,
                     ),
                     RequirementCard(
-                      content: "Birth Certificate",
-                      image: "assets/icons/award.png",
-                      ontap: (val) {
-                        setState(() {
-                          isDoneUploadingBirth = val;
-                        });
-                      },
-                      isDoneUploading: isDoneUploadingBirth,
-                    orderKey:  UniqueKey()
-                    ),
+                        content: "Passport Size Photo",
+                        image: "assets/icons/picture.png",
+                        ontap: (val) {
+                          setState(() {
+                            isDoneUploadingPhoto = val;
+                          });
+                        },
+                        isDoneUploading: isDoneUploadingPhoto,
+                        orderKey: UniqueKey()),
                     RequirementCard(
-                      content: "School Id Card",
-                      image: "assets/icons/id-card.png",
-                      ontap: (val) {
-                        setState(() {
-                          isDoneUploadingIdcard = val;
-                        });
-                      },
-                      isDoneUploading: isDoneUploadingIdcard,
-                      orderKey: UniqueKey()
-                    ),
+                        content: "School Form",
+                        image: "assets/icons/form.png",
+                        ontap: (val) {
+                          setState(() {
+                            isDoneUploadingForm = val;
+                          });
+                        },
+                        isDoneUploading: isDoneUploadingForm,
+                        orderKey: UniqueKey()),
                   ],
                 ),
-                isDoneUploadingBirth && isDoneUploadingIdcard ? Button1("Continue", () {}) : Container()
+                isDoneUploadingPhoto && isDoneUploadingForm
+                    ? Button1("Continue", () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => AddStCardDetails()));
+                      })
+                    : Container()
               ],
             ),
           ),
@@ -92,9 +107,9 @@ class RequirementCard extends StatefulWidget {
   String image;
   var ontap;
   bool isDoneUploading;
-    final Key orderKey;
+  final Key orderKey;
 
-  RequirementCard({required this.content, required this.image, required this.ontap, required this.isDoneUploading,required this.orderKey}): super(key: orderKey);
+  RequirementCard({required this.content, required this.image, required this.ontap, required this.isDoneUploading, required this.orderKey}) : super(key: orderKey);
 
   @override
   State<RequirementCard> createState() => _RequirementCardState(this.isDoneUploading);
@@ -110,14 +125,14 @@ class _RequirementCardState extends State<RequirementCard> {
     return GestureDetector(
       onTap: () async {
         var result;
-        if (widget.content == "Birth Certificate") {
-          bool result = await SupabaseStorage().uploadBirthCertificate();
+        if (widget.content == "Passport Size Photo") {
+          bool result = await SupabaseStorage().uploadPhoto();
           isDoneUploading = result;
 
           widget.ontap(isDoneUploading);
           setState(() {});
         } else {
-          bool result = await SupabaseStorage().uploadIdCard();
+          bool result = await SupabaseStorage().uploadForm();
           isDoneUploading = result;
           widget.ontap(isDoneUploading);
           setState(() {});
@@ -162,8 +177,8 @@ class _RequirementCardState extends State<RequirementCard> {
                   margin: EdgeInsets.only(bottom: 50, left: 30),
                   child: Image.asset(
                     widget.image,
-                    height: 80,
-                    width: 80,
+                    height: 60,
+                    width: 60,
                   ),
                 ),
               )

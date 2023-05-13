@@ -28,7 +28,7 @@ class _DropDownListState extends State<DropDownList> {
                           widget.content == ""
                               ? widget.placeholder
                               : widget.content,
-                          style: Theme.of(context).textTheme.labelMedium,
+                          style: Theme.of(context).textTheme.bodySmall,
                         ),
                         items: widget.data
                             .map((item) => DropdownMenuItem(
@@ -36,7 +36,7 @@ class _DropDownListState extends State<DropDownList> {
                                   child: Text(
                                     item['name'].toString(),
                                     style:
-                                        Theme.of(context).textTheme.labelMedium,
+                                        Theme.of(context).textTheme.bodySmall,
                                   ),
                                 ))
                             .toList(),

@@ -8,7 +8,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class SupabaseStorage {
   final supabase = Supabase.instance.client;
 
-  Future<bool> uploadBirthCertificate() async {
+  Future<bool> uploadPhoto() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
     var userId = await SupaBaseDatabase().getCurrentUserId();
 
@@ -18,12 +18,12 @@ class SupabaseStorage {
       final avatarFile = file;
 
       final String path = await supabase.storage.from('Documents').upload(
-            "UID${userId.toString()}/birthCertificate.jpg",
+            "UID${userId.toString()}/Photo.jpg",
             avatarFile,
             fileOptions: const FileOptions(cacheControl: '3600', upsert: false),
           );
 
-      if (path == "Documents/UID${userId.toString()}/birthCertificate.jpg") {
+      if (path == "Documents/UID${userId.toString()}/Photo.jpg") {
         return true;
       }
     } else {
@@ -33,7 +33,7 @@ class SupabaseStorage {
     return false;
   }
 
-  Future<bool> uploadIdCard() async {
+  Future<bool> uploadForm() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
     var userId = await SupaBaseDatabase().getCurrentUserId();
 
@@ -43,11 +43,11 @@ class SupabaseStorage {
       final avatarFile = file;
 
       final String path = await supabase.storage.from('Documents').upload(
-            "UID${userId.toString()}/IdCard.jpg",
+            "UID${userId.toString()}/Form.jpg",
             avatarFile,
             fileOptions: const FileOptions(cacheControl: '3600', upsert: false),
           );
-      if (path == "Documents/UID${userId.toString()}/IdCard.jpg") {
+      if (path == "Documents/UID${userId.toString()}/Form.jpg") {
         return true;
       }
     } else {
