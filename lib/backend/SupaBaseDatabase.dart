@@ -112,14 +112,15 @@ class SupaBaseDatabase {
   }
 
   AddStCardDetails(StCardModel model) async {
-    await supabase.from("StCard").insert({"userId": model.userId, "institutionName": model.institutionName, "institutionPlace": model.institutionPlace, "address": model.address, "issueDate": model.issueDate, "expiryDate": model.expiryDate, "status": model.status});
+    await supabase.from("StCard").insert({"userId": model.userId, "institutionName": model.institutionName, "institutionPlace": model.institutionPlace, "address": model.address, "issueDate": model.issueDate, "expiryDate": model.expiryDate, "status": model.status,"course":model.course,"courseDuration":model.courseDuration});
   }
 
   Future<String> GetStatusOFStCard() async {
     var userId = await getCurrentUserId();
     var result = await supabase.from("StCard").select("status").eq("userId", userId);
-    print(result[0]["status"]);
-    return result[0]["status"];
+    print(result);
+   
+    return result!=null?  result[0]["status"]:"inprogress";
   }
 
   Future<int> GetStIDOFStCard() async {
@@ -141,6 +142,34 @@ class SupaBaseDatabase {
        var result = await supabase.from("StCard").select().eq("userId", userId);
        print("jjj");
 
-       return StCardModel(userId, result[0]["institutionName"],result[0]["institutionPlace"] ,result[0]["address"], result[0]["issueDate"], result[0]["expiryDate"], result[0]["status"]);
+       return StCardModel(result[0]["stId"],userId, result[0]["institutionName"],result[0]["institutionPlace"] ,result[0]["address"], result[0]["issueDate"], result[0]["expiryDate"], result[0]["status"],result[0]["course"],result[0]["courseDuration"]);
+  }
+
+
+  Future<UserModel> getUserData()async
+  {
+       var userId = await getCurrentUserId();
+       var result = await supabase.from("Users").select().eq("userId", userId);
+
+      return UserModel(userId, result[0]["userName"], result[0]["userAdress"], result[0]["userDob"], result[0]["userPhone"], result[0]["userEmail"]);
+     
+  }
+
+
+  Future<List<Map>> getStudentRoutes(int stid)async{
+
+    var result = await supabase.from("StudentRoutes").select().eq("stId", stid);
+
+
+
+        List<Map> list=[];
+
+        list.add({"from":result[0]['from'],"to":result[0]['to']});
+        list.add({"from":result[1]['from'],"to":result[1]['to']});
+
+
+        return list;
+
+
   }
 }

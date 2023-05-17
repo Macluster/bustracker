@@ -55,6 +55,10 @@ class _ApplyStCardState extends State<ApplyStCard> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Column(
+
+
+
+                  
                   children: [
                     const SizedBox(
                       height: 40,

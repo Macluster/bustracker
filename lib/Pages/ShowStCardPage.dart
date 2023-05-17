@@ -1,4 +1,5 @@
 import 'package:bustracker/Models/StCardModel.dart';
+import 'package:bustracker/Models/UserModel.dart';
 import 'package:bustracker/backend/SupaBaseDatabase.dart';
 import 'package:flip_card/flip_card.dart';
 import 'package:flutter/cupertino.dart';
@@ -9,27 +10,35 @@ class ShowStCardPage extends StatefulWidget {
   State<ShowStCardPage> createState() => _ShowStCardPageState();
 }
 
-
-
 class _ShowStCardPageState extends State<ShowStCardPage> {
-
-
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     getData();
+    getUserData();
+  }
+  
+
+  StCardModel model = StCardModel(0,0, "", "", "", "", "", "","","");
+  UserModel usermodel=UserModel(0,"", "","", "", "");
+  List<Map> routes=[{"from":"","to":""},{"from":"","to":""}];
+
+  void getData() async {
+    model = await SupaBaseDatabase().GetStCardDetails();
+
+    routes=await SupaBaseDatabase().getStudentRoutes(model.stid);
+    
+    setState(() {});
   }
 
-  StCardModel model=StCardModel(0, "","", "", "","", "");
 
-  void getData()async
+  void getUserData()async
   {
-      model=await SupaBaseDatabase().GetStCardDetails();
-      setState(() {
-        
-      });
+    usermodel=await SupaBaseDatabase().getUserData();
+    setState(() {
+      
+    });
   }
 
   @override
@@ -41,7 +50,16 @@ class _ShowStCardPageState extends State<ShowStCardPage> {
           child: Padding(
             padding: const EdgeInsets.all(20),
             child: Column(
-              children: [Text("ST Card",style: Theme.of(context).textTheme.titleLarge,), SizedBox(height: 50,),FlipCard(front: CardFrontSide(), back: CardBackSide())],
+              children: [
+                Text(
+                  "ST Card",
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+              const  SizedBox(
+                  height: 50,
+                ),
+                FlipCard(front: CardFrontSide(), back: CardBackSide())
+              ],
             ),
           ),
         ),
@@ -93,26 +111,26 @@ class _ShowStCardPageState extends State<ShowStCardPage> {
             padding: const EdgeInsets.all(8.0),
             child: Column(
               children: [
-                StudentInfoItem("Name", "Deepak Denny"),
+                StudentInfoItem("Name", usermodel.userName),
                 StudentInfoItem("Age", "23 Years"),
-                StudentInfoItem("Dob", "21/7/2000"),
+                StudentInfoItem("Dob", usermodel.userDob),
                 StudentInfoItem("Institution Name", model.institutionName),
-                StudentInfoItem("Course", "IMCA "),
-                StudentInfoItem("Duration of Course", "5 Years "),
+                StudentInfoItem("Course", model.course),
+                StudentInfoItem("Duration of Course", model.courseDuration +" Years"),
                 StudentInfoItem("Date of Issue", model.issueDate),
                 StudentInfoItem("Date of Expiry", model.expiryDate),
-              const  SizedBox(
+                const SizedBox(
                   height: 30,
                 ),
                 const Text(
                   "Commision Routes",
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 30,
                 ),
-                RouteCard(),
-                RouteCard(),
+                RouteCard(routes[0]),
+                RouteCard(routes[1]),
               ],
             ),
           )
@@ -130,32 +148,50 @@ class _ShowStCardPageState extends State<ShowStCardPage> {
         padding: const EdgeInsets.all(8.0),
         child: Row(
           children: [
-           Container(
-            alignment: Alignment.center,
-            height: double.infinity,width: 40,color: Colors.yellow,child: RotatedBox(quarterTurns: -1,child:Text("Address Of Communication")),),
+            Container(
+              alignment: Alignment.center,
+              height: double.infinity,
+              width: 40,
+              color: Colors.yellow,
+              child: RotatedBox(quarterTurns: -1, child: Text("Address Of Communication")),
+            ),
             SizedBox(width: 10),
-          Container(height: double.infinity,width: 100,decoration: BoxDecoration(border: Border.all(color: Colors.red, width: 3),),),
-             SizedBox(width: 10),
-         Container(
-            alignment: Alignment.center,
-            height: double.infinity,width: 40,color: Colors.yellow,child: RotatedBox(quarterTurns: -1,child:Text("Name and Address Institution ")),),
-                         SizedBox(width: 10),
-                   Container(height: double.infinity,width: 100,decoration: BoxDecoration(border: Border.all(color: Colors.red, width: 3),),),
-
-         
+            Container(
+              height: double.infinity,
+              width: 100,
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.red, width: 3),
+              ),
+            ),
+            SizedBox(width: 10),
+            Container(
+              alignment: Alignment.center,
+              height: double.infinity,
+              width: 40,
+              color: Colors.yellow,
+              child: RotatedBox(quarterTurns: -1, child: Text("Name and Address Institution ")),
+            ),
+            SizedBox(width: 10),
+            Container(
+              height: double.infinity,
+              width: 100,
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.red, width: 3),
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget RouteCard() {
+  Widget RouteCard(Map route) {
     return Row(
       children: [
         Container(
             width: 150,
             child: Text(
-              "Kundanoor",
+              route['from'],
               style: Theme.of(context).textTheme.labelSmall,
             )),
         Text(
@@ -166,7 +202,7 @@ class _ShowStCardPageState extends State<ShowStCardPage> {
           width: 40,
         ),
         Text(
-          "kalamaserry",
+          route['to'],
           style: Theme.of(context).textTheme.labelSmall,
         )
       ],
@@ -192,13 +228,13 @@ class _ShowStCardPageState extends State<ShowStCardPage> {
         Container(
           width: 150,
           child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Text(
-            content,
-            style: Theme.of(context).textTheme.labelSmall,
+            scrollDirection: Axis.horizontal,
+            child: Text(
+              content,
+              style: Theme.of(context).textTheme.labelSmall,
+            ),
           ),
-        ) ,)
-       
+        )
       ],
     );
   }
