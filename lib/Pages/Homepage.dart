@@ -1,5 +1,6 @@
 import 'package:bustracker/Components/Button1.dart';
 import 'package:bustracker/Components/Button2.dart';
+import 'package:bustracker/Components/ShimmerList.dart';
 import 'package:bustracker/Models/MyRouteModel.dart';
 import 'package:bustracker/Models/PaymentModel.dart';
 import 'package:bustracker/Pages/LoginPage.dart';
@@ -10,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
+import 'package:shimmer/shimmer.dart';
 import '../Components/DropDownList.dart';
 import '../Components/IconButton1.dart';
 import '../backend/data.dart';
@@ -110,7 +111,7 @@ class _HomepageState extends State<Homepage> {
                                       }),
                                 );
                               } else {
-                                return Text("No Data");
+                                return ShimmerList(height: 180, width: 120,axis: Axis.horizontal,ContainerHeight: 150,);
                               }
                             });
                       }),
@@ -138,7 +139,7 @@ class _HomepageState extends State<Homepage> {
                                     }),
                               );
                             } else {
-                              return Text("No Data");
+                              return ShimmerList(height: 100, width: double.infinity, axis: Axis.vertical,ContainerHeight: 300,);
                             }
                           }),
                       const SizedBox(
@@ -147,6 +148,7 @@ class _HomepageState extends State<Homepage> {
                     ],
                   ),
                   Button1("New Route", () {
+                    
                     Navigator.push(context, MaterialPageRoute(builder: (context) => NewRoutePage()));
                   })
                 ],
@@ -203,43 +205,45 @@ class MyRoutesCard extends StatelessWidget {
   MyRoutesCard(this.model);
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 50,
-      width: 120,
-      margin: EdgeInsets.only(right: 10),
-      decoration: const BoxDecoration(color: Colors.amber, borderRadius: BorderRadius.all(Radius.circular(10))),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(
-            Icons.location_city,
-            size: 40,
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          Text(
-            model.sartingStopName ,
-            style: Theme.of(context).textTheme.bodySmall,
-            textAlign: TextAlign.center,
-          ),
-          Icon(Icons.arrow_downward),
-              Text(
-            model.sartingStopName ,
-            style: Theme.of(context).textTheme.bodySmall,
-            textAlign: TextAlign.center,
-          )
-        ],
+    return GestureDetector(
+      onTap: (){
+        Navigator.push(context,MaterialPageRoute(builder: (context)=>NewRoutePage.data(currentBusStop: model.sartingStopName,destinationStop: model.destinationStopName)));
+      },
+      child: Container(
+        height: 50,
+        width: 120,
+        margin: EdgeInsets.only(right: 10),
+        decoration: const BoxDecoration(color: Colors.amber, borderRadius: BorderRadius.all(Radius.circular(10))),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(
+              Icons.location_city,
+              size: 40,
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            Text(
+              model.sartingStopName,
+              style: Theme.of(context).textTheme.bodySmall,
+              textAlign: TextAlign.center,
+            ),
+            Icon(Icons.arrow_downward),
+            Text(
+              model.destinationStopName,
+              style: Theme.of(context).textTheme.bodySmall,
+              textAlign: TextAlign.center,
+            )
+          ],
+        ),
       ),
     );
   }
 }
 
 class MyTripCard extends StatelessWidget {
-
-
   PayementModel model;
-
 
   MyTripCard(this.model);
   @override
@@ -268,7 +272,7 @@ class MyTripCard extends StatelessWidget {
                     height: 20,
                   ),
                   Text(
-                    model.from+" to "+model.to,
+                    model.from + " to " + model.to,
                     style: Theme.of(context).textTheme.titleSmall,
                     textAlign: TextAlign.center,
                   )

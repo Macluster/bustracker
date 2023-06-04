@@ -10,6 +10,10 @@ import 'package:provider/provider.dart';
 import '../Providers/PaymentProvider.dart';
 
 class NewRoutePage extends StatefulWidget {
+    String currentBusStop = "";
+  String destinationStop = "";
+  NewRoutePage();
+  NewRoutePage.data({ required this.currentBusStop, required this.destinationStop});
   @override
   State<NewRoutePage> createState() => _NewRoutePageState();
 }
@@ -23,6 +27,8 @@ class _NewRoutePageState extends State<NewRoutePage> {
   var myRoot = [];
   var busesInMyroute = [];
   int routeIndex = 0;
+  
+  
 
   Future<void> getRoute() async {
     var routes = await FirebaseDatabaseClass()
@@ -38,7 +44,7 @@ class _NewRoutePageState extends State<NewRoutePage> {
     });
   }
 
-  void getBusesInMyRoute() async {
+  Future<void> getBusesInMyRoute() async {
     var buses = await SupaBaseDatabase().GetBusData(routeIndex, 3);
 
     buses.forEach((element) {
@@ -49,6 +55,25 @@ class _NewRoutePageState extends State<NewRoutePage> {
     });
 
     setState(() {});
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    currentBusStop=widget.currentBusStop;
+    destinationStop=widget.destinationStop;
+
+    if(currentBusStop!=""&&destinationStop!="")
+    {
+    init();
+    }
+  }
+
+
+  void init()async
+  {
+    await getRoute();
+    await getBusesInMyRoute();
   }
 
   @override

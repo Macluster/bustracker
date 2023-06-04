@@ -37,6 +37,7 @@ dependencies:
   provider:
   file_picker:
   flip_card:
+  shimmer:
 
 
   # The following adds the Cupertino Icons font to your application.

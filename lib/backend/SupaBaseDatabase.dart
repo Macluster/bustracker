@@ -33,6 +33,7 @@ class SupaBaseDatabase {
       buslist.add(model!);
     });
 
+    print(buslist);
     return buslist;
   }
 
@@ -115,12 +116,12 @@ class SupaBaseDatabase {
     await supabase.from("StCard").insert({"userId": model.userId, "institutionName": model.institutionName, "institutionPlace": model.institutionPlace, "address": model.address, "issueDate": model.issueDate, "expiryDate": model.expiryDate, "status": model.status,"course":model.course,"courseDuration":model.courseDuration});
   }
 
-  Future<String> GetStatusOFStCard() async {
+  Future<Map<String,String>> GetStatusOFStCard() async {
     var userId = await getCurrentUserId();
-    var result = await supabase.from("StCard").select("status").eq("userId", userId);
+    var result = await supabase.from("StCard").select("status,message").eq("userId", userId);
     print(result);
    
-    return result!=null?  result[0]["status"]:"inprogress";
+    return result!=null? { "status":result[0]["status"],"message":result[0]["message"]}: { "status":"","message":""};
   }
 
   Future<int> GetStIDOFStCard() async {

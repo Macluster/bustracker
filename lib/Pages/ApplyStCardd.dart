@@ -25,13 +25,13 @@ class _ApplyStCardState extends State<ApplyStCard> {
 
   void initialise() async {
     var isDoneReview = await SupaBaseDatabase().GetStatusOFStCard();
-    if (isDoneReview == "pending") {
+    if (isDoneReview['status'] == "pending") {
       Navigator.push(context, MaterialPageRoute(builder: (context) => StCardReviewPage("pending")));
-    } else if (isDoneReview == "done") {
+    } else if (isDoneReview['status']  == "done") {
       Navigator.push(context, MaterialPageRoute(builder: (context)=>ShowStCardPage()));
-    } else if (isDoneReview != "inprogress") //Condition When  there is a problem with  application so vale of isDonereview will be the problem with  the application
+    } else if (isDoneReview['status'] == "error") //Condition When  there is a problem with  application so vale of isDonereview will be the problem with  the application
     {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => StCardReviewPage(isDoneReview)));
+      Navigator.push(context, MaterialPageRoute(builder: (context) => StCardReviewPage(isDoneReview['message'] as String )));
     }
 
     var birth = await SupabaseStorage().checkItemExist("Photo.jpg");

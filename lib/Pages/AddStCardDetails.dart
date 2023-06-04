@@ -20,8 +20,8 @@ class _AddStCardDetailsState extends State<AddStCardDetails> {
   var HomePlace = TextEditingController();
   var issueDate = TextEditingController();
   var expiryDate = TextEditingController();
-   var course = TextEditingController();
-    var courseDuration = TextEditingController();
+  var course = TextEditingController();
+  var courseDuration = TextEditingController();
 
   String currentBusStop1 = "";
   String destinationStop1 = "";
@@ -71,16 +71,15 @@ class _AddStCardDetailsState extends State<AddStCardDetails> {
                         const SizedBox(
                           height: 30,
                         ),
-                           TextField(
+                        TextField(
                           style: Theme.of(context).textTheme.bodySmall,
                           controller: course,
                           decoration: InputDecoration(hintText: "Course", hintStyle: Theme.of(context).textTheme.bodySmall),
                         ),
-                        
                         const SizedBox(
                           height: 30,
                         ),
-                           TextField(
+                        TextField(
                           style: Theme.of(context).textTheme.bodySmall,
                           controller: courseDuration,
                           decoration: InputDecoration(hintText: "Course Duration", hintStyle: Theme.of(context).textTheme.bodySmall),
@@ -152,7 +151,7 @@ class _AddStCardDetailsState extends State<AddStCardDetails> {
                       var obj = SupaBaseDatabase();
                       var userID = await obj.getCurrentUserId();
 
-                      StCardModel model = StCardModel(0,userID, institutionName.text, institutuionPlace.text, HomePlace.text, issueDate.text, expiryDate.text, "pending",course.text,courseDuration.text);
+                      StCardModel model = StCardModel(0, userID, institutionName.text, institutuionPlace.text, HomePlace.text, issueDate.text, expiryDate.text, "pending", course.text, courseDuration.text);
                       await obj.AddStCardDetails(model);
                       int Stid = await obj.GetStIDOFStCard();
                       await obj.AddToStudentRoutes(Stid, currentBusStop1, destinationStop1, currentBusStop2, destinationStop2);
