@@ -1,12 +1,15 @@
 import 'package:bustracker/Models/BusModel.dart';
 import 'package:bustracker/Models/PaymentModel.dart';
+import 'package:bustracker/Models/SeniorCitizenModel.dart';
 import 'package:bustracker/Models/StCardModel.dart';
 import 'package:bustracker/Models/UserModel.dart';
 import 'package:bustracker/backend/FirebaseDatabase.dart';
 import 'package:bustracker/functions/GetWeekDayname.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../Models/BusReportModel.dart';
 import '../Models/MyRouteModel.dart';
+import '../Models/ReviewModel.dart';
 
 class SupaBaseDatabase {
   final supabase = Supabase.instance.client;
@@ -28,7 +31,7 @@ class SupaBaseDatabase {
     list.forEach((element) async {
       var busStopName = routes[routeId][element['busCurrentLocation']].toString();
 
-      model = BusModel(element['busId'], element['busName'], element['busRoute'], element['busNumber'], busStopName, element['startStop'], element['endStop'], element['startingTime']);
+      model = BusModel(element['busId'], element['busName'], element['busRoute'], element['busNumber'], busStopName, element['startStop'], element['endStop'], element['startingTime'],element['availableSeats']);
 
       buslist.add(model!);
     });
@@ -55,11 +58,11 @@ class SupaBaseDatabase {
   void Addpayement(int userId, int busId, int fare, String from, String to) async {
     var date = DateTime.now();
     var weekday = date.weekday;
-    var mydate = "${date.day}/${date.month}/${date.year}";
-    var dateFormat = "${GetWeekDayName(weekday)} $mydate";
+    var mydate = "${date.year}-${date.month}-${date.day}";
+  //  var dateFormat = "${GetWeekDayName(weekday)} $mydate";
 
     print("userid is " + from);
-    var result = await supabase.from("Payment").insert({"userId": userId, "busId": busId, "fromBusStop": from, "date": dateFormat, "toBusStop": to, "busFare": fare});
+    var result = await supabase.from("Payment").insert({"userId": userId, "busId": busId, "fromBusStop": from, "date": mydate, "toBusStop": to, "busFare": fare});
     print(result.toString());
   }
 
@@ -116,12 +119,28 @@ class SupaBaseDatabase {
     await supabase.from("StCard").insert({"userId": model.userId, "institutionName": model.institutionName, "institutionPlace": model.institutionPlace, "address": model.address, "issueDate": model.issueDate, "expiryDate": model.expiryDate, "status": model.status,"course":model.course,"courseDuration":model.courseDuration});
   }
 
+    AddSeniorCitizenDetails(SeniorCitizenModel model) async {
+    await supabase.from("SeniorCitizens").insert({"userId":model.userId,"status":model.status,"message":model.message,"age":model.age});
+  }
+
+
+
+
+
   Future<Map<String,String>> GetStatusOFStCard() async {
     var userId = await getCurrentUserId();
     var result = await supabase.from("StCard").select("status,message").eq("userId", userId);
     print(result);
    
     return result!=null? { "status":result[0]["status"],"message":result[0]["message"]}: { "status":"","message":""};
+  }
+
+   Future<Map<String,String>> GetStatusOFSenioCitizenShipCard() async {
+    var userId = await getCurrentUserId();
+  List result = await supabase.from("SeniorCitizens").select("status,message").eq("userId", userId);
+    print(result);
+   
+    return result.isNotEmpty? { "status":result[0]["status"],"message":result[0]["message"]}: { "status":"","message":""};
   }
 
   Future<int> GetStIDOFStCard() async {
@@ -172,5 +191,71 @@ class SupaBaseDatabase {
         return list;
 
 
+  }
+
+  Future<List<ReviewModel>> getReviews(int busId) async {
+    final data = await supabase.from('Review').select().eq("busId", busId);
+    var list = data as List;
+
+    List<ReviewModel> reviewlist = [];
+
+    for (int i = 0; i < list.length; i++) {
+      var name = await supabase
+          .from('Users')
+          .select("userName")
+          .eq("userId", list[i]['userId'])
+          .single();
+
+      reviewlist.add(ReviewModel(list[i]['id'], list[i]['review'],
+          list[i]['rating'], name['userName']));
+    }
+    print(reviewlist);
+
+    return reviewlist;
+  }
+
+
+  
+  Future<List<BusReportModel>> getBusReport(String startDate,String endDate) async {
+    List  data=[];
+    int id=await getCurrentUserId();
+    if(startDate=="" || endDate==""||startDate=="null"||endDate=="null")
+    {
+   data = await supabase.from('Payment').select().eq("userId", id);
+
+    }
+    else
+    {
+         data = await supabase.from('Payment').select().eq("userId", id).lt("date", endDate).gt("date", startDate);
+
+    }
+    var list = data as List;
+
+    List<BusReportModel> reportlist = [];
+
+    print("sssssssssssssssssssssssssssssss");
+    for (int i = 0; i < list.length; i++) {
+      print("sssssssssssssssssssssssssssssss");
+      var userData = await supabase
+          .from('Users')
+          .select("userName,userDob")
+          .eq("userId", list[i]['userId'])
+          .single();
+      var busName = await supabase
+          .from('Buses')
+          .select("busName")
+          .eq("busId", list[i]['busId'])
+          .single();
+
+      reportlist.add(BusReportModel(
+          busName['busName'],
+          userData['userName'],
+          list[i]['date'],
+          list[i]['fromBusStop'],
+          list[i]['toBusStop'],
+          list[i]['busFare'],userData['userDob']));
+    }
+
+    return reportlist;
   }
 }

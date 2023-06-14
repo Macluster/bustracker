@@ -4,35 +4,36 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
-class StCardReviewPage extends StatefulWidget
+class SeniorCitizenReviewPage extends StatefulWidget
 {
 
 String isDoneReview="";
 String displayData="";
 String assistanceText="";
 String contentAnimation="";
-    StCardReviewPage(this.isDoneReview)
+ SeniorCitizenReviewPage(this.isDoneReview)
     {
       if(isDoneReview=="pending")
       {
-          displayData="Your ST Card Application is being reviewed";
+          displayData="Your Senior Citizen card Application is being reviewed";
           assistanceText="May Take 1-2 Days to review";
-          contentAnimation="assets/lottie/verifying.json";
+                 contentAnimation="assets/lottie/verifying.json";
        
       }
       else{
         displayData=isDoneReview;
         assistanceText="Call at 9895348904";
-         contentAnimation="assets/lottie/error.json";
+          contentAnimation="assets/lottie/error.json";
+        
          
       }
     }
 
   @override
-  State<StCardReviewPage> createState() => _StCardReviewPageState();
+  State<SeniorCitizenReviewPage> createState() => _SeniorCitizenReviewPageState();
 }
 
-class _StCardReviewPageState extends State<StCardReviewPage> {
+class _SeniorCitizenReviewPageState extends State<SeniorCitizenReviewPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(body:SizedBox(
@@ -43,9 +44,6 @@ class _StCardReviewPageState extends State<StCardReviewPage> {
           
           mainAxisAlignment: MainAxisAlignment.center,
           children:  [
-
-         
-
           Lottie.asset(widget.contentAnimation,height: 200),
           SizedBox(height: 20,),
       

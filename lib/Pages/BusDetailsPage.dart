@@ -2,10 +2,16 @@ import 'dart:ui';
 
 import 'package:bustracker/Models/BusModel.dart';
 import 'package:bustracker/Pages/PaymentPage.dart';
+import 'package:bustracker/Pages/PostPayamentPage.dart';
 import 'package:flutter/material.dart';
+
+import '../Components/ReviewCard.dart';
+import '../Models/ReviewModel.dart';
+import '../backend/SupaBaseDatabase.dart';
 
 class BusDetailsPage extends StatefulWidget {
   BusModel model;
+
 
   BusDetailsPage(this.model);
   @override
@@ -16,90 +22,127 @@ class _BusDetailsPageState extends State<BusDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-            body: SizedBox(
-        width: double.infinity,
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                children: [
-                  SizedBox(height: 100,),
-                 Text(
-                          widget.model.busName + " Bus",
-                          style: const TextStyle(
-                              shadows: [
-                                Shadow(
-                                    offset: Offset(5, 0),
-                                    blurRadius: 4,
-                                    color: Colors.grey)
-                              ],
-                              fontSize: 50,
-                              fontWeight: FontWeight.bold,
-                              color: Color.fromARGB(255, 58, 57, 57)),
-                        ),
-                   
-                  const SizedBox(
-                    height: 30,
+      backgroundColor: Theme.of(context).primaryColorLight,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: SizedBox(
+            width: double.infinity,
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(15),
+                  child: Column(
+                    children: [
+                    
+        
+                      GestureDetector(
+                        onTap: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=>PayementPage()));
+                        },
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child:  Container(
+                            alignment: Alignment.center,
+                            height: 40,
+                            width: 100,
+                              decoration: BoxDecoration(color: Colors.blue,borderRadius: BorderRadius.all(Radius.circular(10))),
+                              child: Text("Book Seat",style: TextStyle(fontSize: 17,color: Colors.white),)),
+                          ),
+                      ),
+                    
+                      const SizedBox(
+                        height: 50,
+                      ),
+                      Text(
+                        widget.model.busName,
+                        style: TextStyle(fontSize: 40,color: Theme.of(context).primaryColor),
+                      ),
+                      Text(
+                        widget.model.busNumber,
+                        style: TextStyle(fontSize: 20, color: Colors.grey),
+                      ),
+                      const SizedBox(
+                        height: 50,
+                      ),
+                      ItemCard(Icons.location_on, widget.model.busCurrentLocation),
+                      ItemCard(Icons.alarm, widget.model.startingTime),
+                      ItemCard(Icons.chair, widget.model.availableSeats.toString()),
+                      const SizedBox(
+                        height: 50,
+                      ),
+                      Row(
+                        children:  [
+                          Text(
+                            "Reviews",
+                            style: TextStyle(fontSize: 20,color: Theme.of(context).primaryColor),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      FutureBuilder(
+                          future: SupaBaseDatabase().getReviews(widget.model.busId),
+                          builder: (context, AsyncSnapshot<List<ReviewModel>> snap) {
+                            if (!snap.hasData) {
+                              return Text("Loading");
+                            } else {
+                              return Container(
+                                height: 250,
+                                child: ListView.builder(
+                                    itemCount: snap.data!.length,
+                                    itemBuilder: (context, index) {
+                                      return ReviewCard(snap.data![index]);
+                                    }),
+                              );
+                            }
+                          })
+                    ],
                   ),
-                  DetailCard(widget.model.busCurrentLocation, Icons.location_on),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  DetailCard("KL 8456 33", Icons.numbers),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  DetailCard("Private Bus", Icons.bus_alert),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  DetailCard("10Rs", Icons.money),
-                ],
-              ),
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => PayementPage()));
-                },
-                child: Container(
-                  alignment: Alignment.center,
-                  height: 70,
-                  width: double.infinity,
-                  color: Colors.amber,
-                  child: const Text("Book tikcet"),
-                ),
-              )
-            ],
+                )
+              ],
+            ),
           ),
         ),
       ),
     );
   }
-}
-
-class DetailCard extends StatelessWidget {
-  String content = "";
-  IconData icon;
-
-  DetailCard(this.content, this.icon);
-
-  @override
-  Widget build(BuildContext context) {
-    var screenWidth = MediaQuery.of(context).size.width;
+   Widget ItemCard(IconData icon, String title) {
     return Container(
-      height: 60,
-      width: (screenWidth) - 30,
-      decoration: const BoxDecoration(
-        boxShadow: [BoxShadow(blurRadius: 3,color: Color.fromARGB(255, 240, 232, 232),spreadRadius: 2)],
-          color: Color.fromARGB(255, 255, 255, 255),
-          borderRadius: BorderRadius.all(Radius.circular(5))),
-      child:ListTile(leading: Icon(icon),title: Text(
-              content,
-              style: Theme.of(context).textTheme.labelSmall,
-          
-            ),)
+      margin: EdgeInsets.only(bottom: 10),
+      height: 100,
+      width: double.infinity,
+      decoration:BoxDecoration(
+        boxShadow: [BoxShadow(blurRadius: 50,color: Color.fromARGB(255, 207, 205, 205),spreadRadius: 1)],
+        
+        color: Color.fromARGB(255, 241, 243, 243),borderRadius: BorderRadius.all(Radius.circular(10))),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          children: [
+            Container(
+              height: 80,
+              width: 80,
+              decoration: BoxDecoration(color: Color.fromARGB(255, 20, 28, 43), borderRadius: BorderRadius.all(Radius.circular(40))),
+              child: Icon(
+                icon,
+                color: Colors.white,
+                size: 30,
+              ),
+            ),
+            SizedBox(
+              width: 20,
+            ),
+            Text(
+              title,
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500,color: Theme.of(context).primaryColor),
+            )
+          ],
+        ),
+      ),
     );
   }
+
+
 }
+

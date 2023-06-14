@@ -57,6 +57,31 @@ class SupabaseStorage {
   }
 
 
+  Future<bool> uploadAdhar() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
+    var userId = await SupaBaseDatabase().getCurrentUserId();
+
+    if (result != null) {
+      File file = File(result.files.single.path.toString());
+
+      final avatarFile = file;
+
+      final String path = await supabase.storage.from('Documents').upload(
+            "UID${userId.toString()}/adhar.jpg",
+            avatarFile,
+            fileOptions: const FileOptions(cacheControl: '3600', upsert: false),
+          );
+      if (path == "Documents/UID${userId.toString()}/adhar.jpg") {
+        return true;
+      }
+    } else {
+      // User canceled the picker
+    }
+    return false;
+  }
+
+
+
 
   Future<bool> checkItemExist(String name)async
   {

@@ -21,6 +21,8 @@ class _SidenavBarState extends State<SidenavBar> {
     MenuItem("Home", Icons.home),
     MenuItem("Settings", Icons.settings),
      MenuItem("Apply St Card", Icons.settings),
+     MenuItem("Apply Senior Citizenship Card", Icons.people),
+      MenuItem("Report", Icons.people),
     
     MenuItem("Sign Out", Icons.book)
   ];

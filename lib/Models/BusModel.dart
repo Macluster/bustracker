@@ -7,6 +7,7 @@ class BusModel {
   int startStop = 0;
   int endStop = 0;
   String startingTime = "";
+  int availableSeats=0;
   BusModel(this.busId, this.busName, this.busroute, this.busNumber,
-      this.busCurrentLocation, this.startStop, this.endStop, this.startingTime);
+      this.busCurrentLocation, this.startStop, this.endStop, this.startingTime,this.availableSeats);
 }

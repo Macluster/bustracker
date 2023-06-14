@@ -1,15 +1,31 @@
+import 'package:bustracker/Models/PaymentModel.dart';
 import 'package:bustracker/Pages/PostPayamentPage.dart';
 import 'package:bustracker/Pages/TicketPage.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../Providers/PaymentProvider.dart';
 
 class PayementPage extends StatefulWidget {
+
+
+  PayementPage();
   @override
   State<PayementPage> createState() => _PayementPageState();
 }
 
 class _PayementPageState extends State<PayementPage> {
+
+  late PayementModel model;
+
+
   @override
   Widget build(BuildContext context) {
+
+    
+      setState(() {
+          model=context.read<PayementProvider>().getPayementData();
+      });
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColorLight,
       body: SizedBox(
@@ -26,7 +42,7 @@ class _PayementPageState extends State<PayementPage> {
               const   SizedBox(
                   height: 40,
                 ),
-                AmountoToPay(context),
+                AmountoToPay(context,model.fare),
              const   SizedBox(
                   height: 40,
                 ),
@@ -48,7 +64,7 @@ class _PayementPageState extends State<PayementPage> {
   }
 }
 
-Widget AmountoToPay(BuildContext context) {
+Widget AmountoToPay(BuildContext context,int fare) {
   return Container(
     alignment: Alignment.center,
     height: 200,
@@ -62,7 +78,7 @@ Widget AmountoToPay(BuildContext context) {
           color: Color.fromARGB(255, 244, 232, 232))
     ], color: Colors.amber, borderRadius: BorderRadius.all(Radius.circular(10))),
     child: Text(
-      "20 Rs",
+      "$fare Rs",
       style: Theme.of(context).textTheme.headlineMedium,
     ),
   );
@@ -71,6 +87,7 @@ Widget AmountoToPay(BuildContext context) {
 class PaymentMethodCard extends StatelessWidget {
   String title;
   String icon;
+
 
   PaymentMethodCard(this.title, this.icon);
 

@@ -6,6 +6,7 @@ import 'package:bustracker/backend/SupaBaseDatabase.dart';
 import 'package:bustracker/backend/data.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:lottie/lottie.dart';
 
 import '../Providers/PaymentProvider.dart';
 
@@ -27,19 +28,25 @@ class _NewRoutePageState extends State<NewRoutePage> {
   var myRoot = [];
   var busesInMyroute = [];
   int routeIndex = 0;
+
+  
   
   
 
   Future<void> getRoute() async {
+    setState(() {
+    
+      myRoot.clear();
+    });
     var routes = await FirebaseDatabaseClass()
         .gerRouteIdAndBusStops(currentBusStop, destinationStop);
 
     context.read<PayementProvider>().setfromBusStop(currentBusStop);
     context.read<PayementProvider>().setToBusStop(destinationStop);
-    context.read<PayementProvider>().setFare(20);
+    context.read<PayementProvider>().setFare(routes['busStops'][0].length*2+10);
 
     setState(() {
-      myRoot = routes['busStops'];
+      myRoot = routes['busStops'][0];
       routeIndex = routes['routeIndex'];
     });
   }
@@ -111,7 +118,7 @@ class _NewRoutePageState extends State<NewRoutePage> {
                     destinationStop = e.toString();
                   });
                   await getRoute();
-                  getBusesInMyRoute();
+                  await getBusesInMyRoute();
                 }),
                 const SizedBox(
                   height: 20,
@@ -150,9 +157,9 @@ class _NewRoutePageState extends State<NewRoutePage> {
                     ? Container(
                         decoration: const BoxDecoration(),
                         margin: EdgeInsets.only(top: 100),
-                        child: Image.asset(
-                          'assets/icons/art2.png',
-                          height: 200,
+                        child: Lottie.asset(
+                          'assets/lottie/a2.json',
+                          height: 250,
                         ),
                       )
                     : Container(),
@@ -168,6 +175,7 @@ class _NewRoutePageState extends State<NewRoutePage> {
 
 class BusCard extends StatelessWidget {
   BusModel model;
+ 
 
   BusCard(this.model);
 
