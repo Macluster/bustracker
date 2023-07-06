@@ -79,7 +79,6 @@ class _ReportPageState extends State<ReportPage> {
                                         .subtract(Duration(days: 500)),
                                     lastDate:
                                         DateTime.now().add(Duration(days: 500)));
-                                print(startDate);
           
                                 startDate = sDate.toString().split(" ")[0];
                                 if (startDate == "null") {
@@ -254,7 +253,6 @@ class _GraphViewState extends State<GraphView> {
       var dobYear = element.userDob.split("-")[0];
 
       int age = DateTime.now().year - int.parse(dobYear);
-      print(age);
 
       if (age >= 10 && age < 20) {
         agelist[0] = agelist[0] + 1;
@@ -298,8 +296,6 @@ class _GraphViewState extends State<GraphView> {
           int.parse(element.date.split("-")[2]));
       fares[date.weekday] = fares[date.weekday] + element.fare;
     });
-    print("fares=");
-    print(fares);
 
     data = [
       BarChartModel(

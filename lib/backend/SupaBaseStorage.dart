@@ -24,6 +24,10 @@ class SupabaseStorage {
           );
 
       if (path == "Documents/UID${userId.toString()}/Photo.jpg") {
+        var url = await supabase.storage
+            .from("Documents")
+            .getPublicUrl("UID${userId.toString()}/Photo.jpg");
+        SupaBaseDatabase().addProilePhotoUrl(url);
         return true;
       }
     } else {
@@ -48,6 +52,10 @@ class SupabaseStorage {
             fileOptions: const FileOptions(cacheControl: '3600', upsert: false),
           );
       if (path == "Documents/UID${userId.toString()}/Form.jpg") {
+        var url = await supabase.storage
+            .from("Documents")
+            .getPublicUrl("UID${userId.toString()}/Form.jpg");
+        SupaBaseDatabase().addFormPhotoUrl(url);
         return true;
       }
     } else {
@@ -55,7 +63,6 @@ class SupabaseStorage {
     }
     return false;
   }
-
 
   Future<bool> uploadAdhar() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
@@ -80,23 +87,14 @@ class SupabaseStorage {
     return false;
   }
 
-
-
-
-  Future<bool> checkItemExist(String name)async
-  {
- var userId = await SupaBaseDatabase().getCurrentUserId();
-     final Uint8List file = await supabase
-  .storage
-  .from('Documents')
-  .download("UID$userId/"+name);
-        if(file!=null)
-        {
-          return true;
-        }
-        else
-        {
-          return false;
-        }
+  Future<bool> checkItemExist(String name) async {
+    var userId = await SupaBaseDatabase().getCurrentUserId();
+    final Uint8List file =
+        await supabase.storage.from('Documents').download("UID$userId/" + name);
+    if (file != null) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }

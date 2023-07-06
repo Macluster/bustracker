@@ -4,6 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
+import '../Components/Button1.dart';
+
 class SeniorCitizenReviewPage extends StatefulWidget
 {
 
@@ -41,19 +43,26 @@ class _SeniorCitizenReviewPageState extends State<SeniorCitizenReviewPage> {
       child: Padding(
         padding: const EdgeInsets.all(15),
         child: Column(
-          
-          mainAxisAlignment: MainAxisAlignment.center,
-          children:  [
-          Lottie.asset(widget.contentAnimation,height: 200),
-          SizedBox(height: 20,),
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              
+              mainAxisAlignment: MainAxisAlignment.center,
+              children:  [
+                              SizedBox(height: 150,),
+              Lottie.asset(widget.contentAnimation,height: 200),
+              SizedBox(height: 20,),
       
-          Text(widget.displayData,style:TextStyle(fontSize: 35,letterSpacing: 1,),textAlign: TextAlign.center,),
-          SizedBox(height: 50,),
-          
-          
-          Text(widget.assistanceText, style: TextStyle(color: Colors.grey,fontSize: 20),)
+              Text(widget.displayData,style:TextStyle(fontSize: 35,letterSpacing: 1,),textAlign: TextAlign.center,),
+              SizedBox(height: 50,),
+              
+              
+              Text(widget.assistanceText, style: TextStyle(color: Colors.grey,fontSize: 20),)
        
-        ],),
+            ],),
+              Button1("ReSubmit", (){Navigator.pop(context);})
+          ],
+        ),
       ),
     ) ,);
   }

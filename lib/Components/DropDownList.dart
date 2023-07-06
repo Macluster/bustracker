@@ -1,4 +1,5 @@
 
+import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -19,33 +20,23 @@ class _DropDownListState extends State<DropDownList> {
   Widget build(BuildContext context) {
     var  screenWidth = MediaQuery.of(context).size.width;
     
-    return  Container(
-                    width: screenWidth - 10,
-                    child: DropdownButton(
-                        iconSize: 30,
-                        iconEnabledColor: Colors.white,
-                        hint: Text(
-                          widget.content == ""
-                              ? widget.placeholder
-                              : widget.content,
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
-                        items: widget.data
-                            .map((item) => DropdownMenuItem(
-                                  value: item['name'].toString(),
-                                  child: Text(
-                                    item['name'].toString(),
-                                    style:
-                                        Theme.of(context).textTheme.bodySmall,
-                                  ),
-                                ))
-                            .toList(),
-                        onChanged: (e) {
-                          setState(() {
-                            widget.content=e.toString();
-                            widget.onChangedFun(e.toString());
-                           
-                          });
-                        }));
+    return   DropDownTextField(
+                    enableSearch: true,
+                    searchDecoration: InputDecoration(
+                      hintText:widget.placeholder),
+                  validator: (value) {
+                    if (value == null) {
+                      return "Required field";
+                    } else {
+                      return null;
+                    }
+                  },
+                  dropDownList: [
+                    for(var item in widget.data)
+                    DropDownValueModel(name: item, value: item)
+                  ],
+                  onChanged: (ele){widget.onChangedFun(ele.value);},
+                  
+                  );
   }
 }

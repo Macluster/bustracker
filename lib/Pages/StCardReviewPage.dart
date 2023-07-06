@@ -1,5 +1,6 @@
 
 
+import 'package:bustracker/Components/Button1.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
@@ -40,22 +41,30 @@ class _StCardReviewPageState extends State<StCardReviewPage> {
       child: Padding(
         padding: const EdgeInsets.all(15),
         child: Column(
-          
-          mainAxisAlignment: MainAxisAlignment.center,
-          children:  [
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+           
+              
+              mainAxisAlignment: MainAxisAlignment.center,
+              children:  [
 
-         
+              SizedBox(height: 150,),
 
-          Lottie.asset(widget.contentAnimation,height: 200),
-          SizedBox(height: 20,),
+              Lottie.asset(widget.contentAnimation,height: 200),
+              SizedBox(height: 20,),
       
-          Text(widget.displayData,style:TextStyle(fontSize: 35,letterSpacing: 1,),textAlign: TextAlign.center,),
-          SizedBox(height: 50,),
-          
-          
-          Text(widget.assistanceText, style: TextStyle(color: Colors.grey,fontSize: 20),)
+              Text(widget.displayData,style:TextStyle(fontSize: 35,letterSpacing: 1,),textAlign: TextAlign.center,),
+              SizedBox(height: 50,),
+              
+              
+              Text(widget.assistanceText, style: TextStyle(color: Colors.grey,fontSize: 20),),
+             
        
-        ],),
+            ],),
+             Button1("ReSubmit", (){Navigator.pop(context);})
+          ],
+        ),
       ),
     ) ,);
   }

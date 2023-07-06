@@ -20,7 +20,7 @@ class ReviewCard extends StatelessWidget {
      
      
       child: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(0),
         child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
           const CircleAvatar(
               backgroundImage: NetworkImage(
@@ -34,7 +34,7 @@ class ReviewCard extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Text(model.userName,style: TextStyle(fontSize: 20),),
+                  Text(model.userName,style: TextStyle(fontSize: 15),),
                   const SizedBox(
                     width: 10,
                   ),

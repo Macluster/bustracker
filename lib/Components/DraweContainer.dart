@@ -1,7 +1,8 @@
 import 'package:bustracker/Pages/ApplySeniorCitizenshipCard.dart';
 import 'package:bustracker/Pages/ApplyStCardd.dart';
+import 'package:bustracker/Pages/MyTravelsPage.dart';
 import 'package:bustracker/Pages/ReportPage.dart';
-import 'package:bustracker/Pages/SettingsPage.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_zoom_drawer/config.dart';
 import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
@@ -20,7 +21,7 @@ class DrawerContainer extends StatefulWidget {
 class _DrawerContainerState extends State<DrawerContainer> {
   int currentItem = 0;
 
-  var pages = [Homepage(), SettingsPage(),ApplyStCard() ,ApplySeniorCitizenshipCard(),ReportPage(),Container()];
+  var pages = [Homepage(),MyTravelsPage(),ApplyStCard() ,ApplySeniorCitizenshipCard(),ReportPage(),Container()];
 
   Widget build(BuildContext context) {
     return Scaffold(

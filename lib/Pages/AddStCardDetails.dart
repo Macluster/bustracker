@@ -22,6 +22,7 @@ class _AddStCardDetailsState extends State<AddStCardDetails> {
   var expiryDate = TextEditingController();
   var course = TextEditingController();
   var courseDuration = TextEditingController();
+   var SearchedbusStops=[];
 
   String currentBusStop1 = "";
   String destinationStop1 = "";
@@ -31,6 +32,21 @@ class _AddStCardDetailsState extends State<AddStCardDetails> {
 
   String currentBusStop3 = "";
   String destinationStop3 = "";
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getBustops();
+  }
+
+    void getBustops()async
+  {
+       SearchedbusStops= await SupaBaseDatabase().getBusStopName();
+       setState(() {
+         
+       });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -112,7 +128,7 @@ class _AddStCardDetailsState extends State<AddStCardDetails> {
                           height: 30,
                         ),
                         Text("Route 1"),
-                        DropDownList(bustops, currentBusStop1, "From", (e) {
+                        DropDownList(SearchedbusStops, currentBusStop1, "From", (e) {
                           setState(() {
                             currentBusStop1 = e.toString();
                           });
@@ -120,7 +136,7 @@ class _AddStCardDetailsState extends State<AddStCardDetails> {
                         const SizedBox(
                           height: 30,
                         ),
-                        DropDownList(bustops, destinationStop1, "TO", (e) {
+                        DropDownList(SearchedbusStops, destinationStop1, "TO", (e) {
                           setState(() {
                             destinationStop1 = e.toString();
                           });
@@ -129,7 +145,7 @@ class _AddStCardDetailsState extends State<AddStCardDetails> {
                           height: 30,
                         ),
                         Text("Route 2"),
-                        DropDownList(bustops, currentBusStop2, "From", (e) {
+                        DropDownList(SearchedbusStops, currentBusStop2, "From", (e) {
                           setState(() {
                             currentBusStop2 = e.toString();
                           });
@@ -137,7 +153,7 @@ class _AddStCardDetailsState extends State<AddStCardDetails> {
                         const SizedBox(
                           height: 30,
                         ),
-                        DropDownList(bustops, destinationStop2, "TO", (e) {
+                        DropDownList(SearchedbusStops, destinationStop2, "TO", (e) {
                           setState(() {
                             destinationStop2 = e.toString();
                           });

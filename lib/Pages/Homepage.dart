@@ -25,18 +25,22 @@ class _HomepageState extends State<Homepage> {
   List<MyRouteModel> myRouteslist = [];
   String currentBusStop = "";
   String destinationStop = "";
-
+  var SearchedbusStops = [];
   getMyRoutes() async {
     // myRouteslist = await SupaBaseDatabase().getMyroutes();
-    print(myRouteslist);
     setState(() {});
   }
 
+ void getBustops() async {
+    SearchedbusStops = await SupaBaseDatabase().getBusStopName();
+    setState(() {});
+  }
   @override
   void initState() {
     // TODO: implement initState
     //getMyRoutes();
     super.initState();
+    getBustops();
   }
 
   @override
@@ -96,10 +100,8 @@ class _HomepageState extends State<Homepage> {
                         return StreamBuilder(
                             stream: SupaBaseDatabase().GetMyRouteStream(data.getUserId()),
                             builder: (context, AsyncSnapshot snap) {
-                              print("dataaa=");
-                              print(snap.data);
                               if (snap.hasData) {
-                                List data = SupaBaseDatabase().getMyroutes(snap.data);
+                                List data = SupaBaseDatabase().getMyroutesModelList(snap.data);
                                 return Container(
                                   height: 150,
                                   width: double.infinity,
@@ -126,7 +128,7 @@ class _HomepageState extends State<Homepage> {
                         height: 20,
                       ),
                       FutureBuilder(
-                          future: SupaBaseDatabase().getHistory(3),
+                          future: SupaBaseDatabase().getHistory(),
                           builder: (context, AsyncSnapshot<List<PayementModel>> snap) {
                             if (snap.hasData) {
                               return Container(
@@ -174,11 +176,11 @@ class _HomepageState extends State<Homepage> {
                 padding: const EdgeInsets.all(15),
                 child: Column(
                   children: [
-                    DropDownList(bustops, currentBusStop, "Current Bus stop", (e) {
+                    DropDownList(SearchedbusStops, currentBusStop, "Current Bus stop", (e) {
                       currentBusStop = e.toString();
                       setState(() {});
                     }),
-                    DropDownList(bustops, destinationStop, "Destination Bus stop", (e) async {
+                    DropDownList(SearchedbusStops, destinationStop, "Destination Bus stop", (e) async {
                       setState(() {
                         destinationStop = e.toString();
                       });

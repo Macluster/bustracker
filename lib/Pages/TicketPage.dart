@@ -1,6 +1,15 @@
+import 'package:bustracker/Models/PaymentModel.dart';
+import 'package:bustracker/backend/SupaBaseDatabase.dart';
+import 'package:bustracker/main.dart';
 import 'package:flutter/material.dart';
 
 class TicketPage extends StatelessWidget {
+
+
+  
+
+  PayementModel model;
+  TicketPage(this.model);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,13 +26,18 @@ class TicketPage extends StatelessWidget {
                   "Your Ticket",
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
-                TheTicket(),
-                Container(
-                  alignment: Alignment.center,
-                  height: 50,
-                  color: Colors.amber,
-                  width: double.infinity,
-                  child: Text("Save Ticket"),
+                TheTicket(model),
+                GestureDetector(
+                  onTap: (){
+                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>MyHomePage(title: "")));
+                  },
+                  child: Container(
+                    alignment: Alignment.center,
+                    height: 50,
+                    color: Colors.amber,
+                    width: double.infinity,
+                    child: Text("Save Ticket"),
+                  ),
                 )
               ],
             ),
@@ -34,7 +48,33 @@ class TicketPage extends StatelessWidget {
   }
 }
 
-class TheTicket extends StatelessWidget {
+class TheTicket extends StatefulWidget {
+
+  late PayementModel  model;
+  TheTicket(this.model);
+
+  @override
+  State<TheTicket> createState() => _TheTicketState();
+}
+
+class _TheTicketState extends State<TheTicket> {
+  String busName="";
+
+  getBusname()async
+  {
+    busName=await SupaBaseDatabase().getBusNameUsingId(widget.model.busId);
+    setState(() {
+      
+    });
+    
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getBusname();
+  }
+
   @override
   Widget build(BuildContext context) {
     var screenWidth = MediaQuery.of(context).size.width;
@@ -66,50 +106,50 @@ class TheTicket extends StatelessWidget {
                         child: Column(
                           children: [
                             Row(
-                              children: const [
-                                Icon(
+                              children:  [
+                            const    Icon(
                                   Icons.bus_alert_sharp,
                                   color: Colors.blue,
                                   size: 40,
                                 ),
-                                SizedBox(
+                           const     SizedBox(
                                   width: 10,
                                 ),
-                                Text("Jesus Bus"),
+                                Text(busName),
                               ],
                             ),
                             const Divider(
                               color: Colors.grey,
                               thickness: 1,
                             ),
-                            SizedBox(
+                         const   SizedBox(
                               height: 20,
                             ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  "Vytilla",
+                                  widget.model.from,
                                   style:
                                       Theme.of(context).textTheme.labelMedium,
                                 ),
-                                Icon(
+                             const   Icon(
                                   Icons.arrow_forward,
                                   color: Colors.red,
                                 ),
                                 Text(
-                                  "Kundanoor",
+                                widget.model.to,
                                   style:
                                       Theme.of(context).textTheme.labelMedium,
                                 )
                               ],
                             ),
-                            SizedBox(
+                          const  SizedBox(
                               height: 5,
                             ),
-                            Row(
+                           const Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: const [
+                              children:  [
                                 Text(
                                   "OCT 21,10:30 Am",
                                   style: TextStyle(fontSize: 11),
@@ -120,11 +160,11 @@ class TheTicket extends StatelessWidget {
                                 )
                               ],
                             ),
-                            SizedBox(
+                          const  SizedBox(
                               height: 50,
                             ),
                             Text(
-                              "25 Rs",
+                              widget.model.fare.toString(),
                               style: Theme.of(context).textTheme.headlineLarge,
                             ),
 

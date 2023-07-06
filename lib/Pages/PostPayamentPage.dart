@@ -1,6 +1,8 @@
 import 'package:bustracker/Components/Button1.dart';
 import 'package:bustracker/Models/BusModel.dart';
+import 'package:bustracker/Models/PaymentModel.dart';
 import 'package:bustracker/Pages/Homepage.dart';
+import 'package:bustracker/Pages/TicketPage.dart';
 import 'package:bustracker/Providers/UserProvider.dart';
 import 'package:bustracker/backend/SupaBaseDatabase.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -39,13 +41,13 @@ class PostPaymentPage extends StatelessWidget {
                     const SizedBox(
                       height: 100,
                     ),
-                    TextField(
+                    const TextField(
                       decoration: InputDecoration(hintText: "Card Number"),
                     ),
                     const SizedBox(
                       height: 30,
                     ),
-                    TextField(
+                    const TextField(
                       decoration: InputDecoration(hintText: "CVV"),
                     ),
                     const SizedBox(
@@ -57,25 +59,25 @@ class PostPaymentPage extends StatelessWidget {
                           "Expiry Date",
                           style: Theme.of(context).textTheme.labelMedium,
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 30,
                         ),
                         Container(
                           width: 50,
-                          child: TextField(
+                          child: const TextField(
                             decoration: InputDecoration(hintText: "day"),
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 20,
                         ),
-                        Text("/"),
-                        SizedBox(
+                        const Text("/"),
+                        const SizedBox(
                           width: 20,
                         ),
                         Container(
                           width: 50,
-                          child: TextField(
+                          child: const TextField(
                             decoration: InputDecoration(hintText: "day"),
                           ),
                         ),
@@ -88,9 +90,12 @@ class PostPaymentPage extends StatelessWidget {
                     int id = await SupaBaseDatabase().getCurrentUserId();
                     var model =
                         context.read<PayementProvider>().getPayementData();
-                    //SupaBaseDatabase().Addpayement(
-                     ///   id, model.busId, model.fare, model.from, model.to);
-                     Navigator.push(context,MaterialPageRoute(builder: (context)=>PayementDonePage()));
+                    SupaBaseDatabase().Addpayement(
+                        id, model.busId, model.fare, model.from, model.to);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => PayementDonePage()));
                   },
                   child: Container(
                     alignment: Alignment.center,
@@ -109,34 +114,39 @@ class PostPaymentPage extends StatelessWidget {
   }
 }
 
-
-class PayementDonePage extends StatelessWidget
-{
+class PayementDonePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-  
+
     return Scaffold(
       body: SafeArea(
-        child: SizedBox(width: double.infinity, 
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-        
-                 Container(
-                  margin: EdgeInsets.all(20),
-                  child: Text("Payment done",style: TextStyle(fontSize: 40),)),
-              Center(child: Lottie.asset("assets/lottie/done.json",height: 250)),
-              Button1("Okay", (){
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>Homepage()));
-              })
-            ],
+        child: SizedBox(
+          width: double.infinity,
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                    margin: EdgeInsets.all(20),
+                    child: Text(
+                      "Payment done",
+                      style: TextStyle(fontSize: 40),
+                    )),
+                Center(
+                    child:
+                        Lottie.asset("assets/lottie/done.json", height: 250)),
+                Button1("Okay", () {
+                  var   model = context.read<PayementProvider>().getPayementData();
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => TicketPage(model)));
+                })
+              ],
+            ),
           ),
-        ),),
+        ),
       ),
     );
   }
-
 }

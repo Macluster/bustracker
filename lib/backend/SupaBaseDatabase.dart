@@ -15,73 +15,150 @@ class SupaBaseDatabase {
   final supabase = Supabase.instance.client;
 
   void AddUserDetails(UserModel model) async {
-    await supabase.from("Users").insert({"userName": model.userName, "userAdress": model.userAddress, "userPhone": model.userPhone, "userEmail": model.userEmail, "userDob": model.userDob});
+    await supabase.from("Users").insert({
+      "userName": model.userName,
+      "userAdress": model.userAddress,
+      "userPhone": model.userPhone,
+      "userEmail": model.userEmail,
+      "userDob": model.userDob
+    });
   }
 
-  Future<List<BusModel>> GetBusData(int routeId, int currentBusStopOfUser) async {
-    final data = await supabase.from('Buses').select().eq("busRoute", routeId).gt("busCurrentLocation", currentBusStopOfUser);
+  Future<List<BusModel>> getBusData(
+      int routeId, String currentBusStopOfUser,int routeDirection) async {
+
+
+        int currentBusStopIDOfUser=await getbusStopIdusingName(currentBusStopOfUser);
+    var date = DateTime.now();
+    print(routeId);
+    
+
+    print(
+        "\n\n**************************Fetching Bus Data with(GetBusData method)*************************\n\n");
+        final data;
+    if(routeDirection==0)
+    {
+      print(currentBusStopIDOfUser);
+       data = await supabase
+        .from('Buses')
+        .select()
+        .eq("busRoute", routeId)
+        .lt("busCurrentLocation", currentBusStopIDOfUser);
+
+    }
+    else
+    {
+           print(currentBusStopOfUser);
+       data = await supabase
+        .from('Buses')
+        .select()
+        .eq("busRoute", routeId)
+        .gt("busCurrentLocation", currentBusStopIDOfUser);
+      //  .lt("startingTime", "9:00:00");
+    }
+  
+    // final data = await supabase.from('Buses').select().eq("busRoute", routeId).gt("busCurrentLocation", currentBusStopOfUser);
 
     var list = data as List;
+    print("result:");
+    print(list);
 
     List<BusModel> buslist = [];
 
+    //Creating Model out of it
     BusModel? model;
-    var routes = await FirebaseDatabaseClass().getBusStopNameFromID();
 
-    list.forEach((element) async {
-      var busStopName = routes[routeId][element['busCurrentLocation']].toString();
+    for (var i = 0; i < list.length; i++) {
+      var busStopName =
+          await getBusStopNameUsingId(list[i]['busCurrentLocation']);
 
-      model = BusModel(element['busId'], element['busName'], element['busRoute'], element['busNumber'], busStopName, element['startStop'], element['endStop'], element['startingTime'],element['availableSeats']);
+      model = BusModel(
+          list[i]['busId'],
+          list[i]['busName'],
+          list[i]['busRoute'],
+          list[i]['busNumber'],
+          busStopName,
+          list[i]['startStop'],
+          list[i]['endStop'],
+          list[i]['startingTime'],
+          list[i]['availableSeats'],
+          list[i]['averageSpeed'],
+          0);
 
       buslist.add(model!);
-    });
+    }
 
-    print(buslist);
+    print("**************************************************************************");
+
     return buslist;
-  }
-
-  Future<int> GetUserStopNameUsingid(String email) async {
-    List data = await supabase.from("BusStops").select("busStopName").eq("userEmail", email) as List;
-    print("userId=" + data[0]['userId'].toString());
-
-    return data[0]['userId'] as int;
   }
 
   Future<int> getCurrentUserId() async {
     var email = Supabase.instance.client.auth.currentUser!.email;
-    List data = await supabase.from("Users").select("userId").eq("userEmail", email) as List;
+    List data = await supabase
+        .from("Users")
+        .select("userId")
+        .eq("userEmail", email) as List;
     print("userId=" + data[0]['userId'].toString());
 
     return data[0]['userId'] as int;
   }
 
-  void Addpayement(int userId, int busId, int fare, String from, String to) async {
+  Future<String> getBusStopNameUsingId(int id) async {
+    var data = await supabase
+        .from("BusStops")
+        .select("busStopName")
+        .eq("busStopId", id);
+
+    var nameData = data as List;
+
+    return nameData[0]['busStopName'];
+  }
+
+  void Addpayement(
+      int userId, int busId, int fare, String from, String to) async {
     var date = DateTime.now();
     var weekday = date.weekday;
     var mydate = "${date.year}-${date.month}-${date.day}";
-  //  var dateFormat = "${GetWeekDayName(weekday)} $mydate";
+    //  var dateFormat = "${GetWeekDayName(weekday)} $mydate";
 
-    print("userid is " + from);
-    var result = await supabase.from("Payment").insert({"userId": userId, "busId": busId, "fromBusStop": from, "date": mydate, "toBusStop": to, "busFare": fare});
+    var result = await supabase.from("Payment").insert({
+      "userId": userId,
+      "busId": busId,
+      "fromBusStop": from,
+      "date": mydate,
+      "toBusStop": to,
+      "busFare": fare
+    });
     print(result.toString());
   }
 
+////////////////////////////////  For Dealing favarite routes   //////////////////////////////////////////////////////////
+
+  // to get favorite route data from supabase as stream  for passing it to the below function
   Stream GetMyRouteStream(int userId) {
-    print("hhhhh" + userId.toString());
-    return supabase.from('MyRoutes').stream(primaryKey: ["myRouteId"]).eq('userId', userId).map((event) {
+    return supabase
+        .from('MyRoutes')
+        .stream(primaryKey: ["myRouteId"])
+        .eq('userId', userId)
+        .map((event) {
           return event;
         });
   }
 
-  List<MyRouteModel> getMyroutes(var snap) {
+  // To make the favorite data gor from GetMyRouteStream  to MyRoutesModel
+  // to be used for  favorite routes that we create
+  List<MyRouteModel> getMyroutesModelList(var snap) {
     List<MyRouteModel> routelist = [];
     var model = MyRouteModel(1, 2, 2, " ", " ");
-    // var result =
-    //    await supabase.from('MyRoutes').select().eq('userId', userId) as List;
 
     snap.forEach((element) {
-      print(element['sartingStopName']);
-      model = MyRouteModel(element['myRouteId'], element['userId'], element['routeId'], element['startingStopName'], element['destinationStopName']);
+      model = MyRouteModel(
+          element['myRouteId'],
+          element['userId'],
+          element['routeId'],
+          element['startingStopName'],
+          element['destinationStopName']);
 
       routelist.add(model);
     });
@@ -89,17 +166,25 @@ class SupaBaseDatabase {
     return routelist;
   }
 
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
   AddMyRoute(String StartStop, String DestinationStop) async {
     int userId = await getCurrentUserId();
 
-    var routeData = await FirebaseDatabaseClass().gerRouteIdAndBusStops(StartStop, DestinationStop);
+    var routeData = await FirebaseDatabaseClass()
+        .gerRouteIdAndBusStops(StartStop, DestinationStop);
 
-    var result = await supabase.from("MyRoutes").insert({"userId": userId, "routeId": routeData['routeIndex'], "startingStopName": StartStop, "destinationStopName": DestinationStop});
-
-    print(result);
+    var result = await supabase.from("MyRoutes").insert({
+      "userId": userId,
+      "routeId": routeData['routeIndex'],
+      "startingStopName": StartStop,
+      "destinationStopName": DestinationStop
+    });
   }
 
-  Future<List<PayementModel>> getHistory(int id) async {
+  Future<List<PayementModel>> getHistory() async {
+
+    var id=await getCurrentUserId();
     List result = await supabase.from("Payment").select().eq("userId", id);
 
     PayementModel model = PayementModel(1, 1, 1, "", "", 1, "");
@@ -107,7 +192,14 @@ class SupaBaseDatabase {
     List<PayementModel> list = [];
 
     result.forEach((element) {
-      model = PayementModel(element['paymentId'], element['busId'], element['userId'], element['fromBusStop'], element['toBusStop'], element['busFare'], element["date"]);
+      model = PayementModel(
+          element['paymentId'],
+          element['busId'],
+          element['userId'],
+          element['fromBusStop'],
+          element['toBusStop'],
+          element['busFare'],
+          element["date"]);
 
       list.add(model);
     });
@@ -116,81 +208,114 @@ class SupaBaseDatabase {
   }
 
   AddStCardDetails(StCardModel model) async {
-    await supabase.from("StCard").insert({"userId": model.userId, "institutionName": model.institutionName, "institutionPlace": model.institutionPlace, "address": model.address, "issueDate": model.issueDate, "expiryDate": model.expiryDate, "status": model.status,"course":model.course,"courseDuration":model.courseDuration});
+    await supabase.from("StCard").insert({
+      "userId": model.userId,
+      "institutionName": model.institutionName,
+      "institutionPlace": model.institutionPlace,
+      "address": model.address,
+      "issueDate": model.issueDate,
+      "expiryDate": model.expiryDate,
+      "status": model.status,
+      "course": model.course,
+      "courseDuration": model.courseDuration
+    });
   }
 
-    AddSeniorCitizenDetails(SeniorCitizenModel model) async {
-    await supabase.from("SeniorCitizens").insert({"userId":model.userId,"status":model.status,"message":model.message,"age":model.age});
+  AddSeniorCitizenDetails(SeniorCitizenModel model) async {
+    await supabase.from("SeniorCitizens").insert({
+      "userId": model.userId,
+      "status": model.status,
+      "message": model.message,
+      "age": model.age
+    });
   }
 
-
-
-
-
-  Future<Map<String,String>> GetStatusOFStCard() async {
+  Future<Map<String, String>> GetStatusOFStCard() async {
     var userId = await getCurrentUserId();
-    var result = await supabase.from("StCard").select("status,message").eq("userId", userId);
-    print(result);
-   
-    return result!=null? { "status":result[0]["status"],"message":result[0]["message"]}: { "status":"","message":""};
+    var result = await supabase
+        .from("StCard")
+        .select("status,message")
+        .eq("userId", userId);
+
+    return result != null
+        ? {"status": result[0]["status"], "message": result[0]["message"]}
+        : {"status": "", "message": ""};
   }
 
-   Future<Map<String,String>> GetStatusOFSenioCitizenShipCard() async {
+  Future<Map<String, String>> GetStatusOFSenioCitizenShipCard() async {
     var userId = await getCurrentUserId();
-  List result = await supabase.from("SeniorCitizens").select("status,message").eq("userId", userId);
-    print(result);
-   
-    return result.isNotEmpty? { "status":result[0]["status"],"message":result[0]["message"]}: { "status":"","message":""};
+    List result = await supabase
+        .from("SeniorCitizens")
+        .select("status,message")
+        .eq("userId", userId);
+
+    return result.isNotEmpty
+        ? {"status": result[0]["status"], "message": result[0]["message"]}
+        : {"status": "", "message": ""};
   }
 
   Future<int> GetStIDOFStCard() async {
     var userId = await getCurrentUserId();
-    var result = await supabase.from("StCard").select("stId").eq("userId", userId);
-    print(result[0]["stId"]);
+    var result =
+        await supabase.from("StCard").select("stId").eq("userId", userId);
     return result[0]["stId"];
   }
 
-  AddToStudentRoutes(int stId,String t1, String d1, String t2, String d2) async{
-
-    await supabase.from("StudentRoutes").insert({"stId":stId,"from":t1,"to":d1});
-    await supabase.from("StudentRoutes").insert({"stId":stId,"from":t2,"to":d2});
+  AddToStudentRoutes(
+      int stId, String t1, String d1, String t2, String d2) async {
+    await supabase
+        .from("StudentRoutes")
+        .insert({"stId": stId, "from": t1, "to": d1});
+    await supabase
+        .from("StudentRoutes")
+        .insert({"stId": stId, "from": t2, "to": d2});
   }
 
-  Future<StCardModel> GetStCardDetails()async
+  addFormPhotoUrl(String url)async
   {
         var userId = await getCurrentUserId();
-       var result = await supabase.from("StCard").select().eq("userId", userId);
-       print("jjj");
-
-       return StCardModel(result[0]["stId"],userId, result[0]["institutionName"],result[0]["institutionPlace"] ,result[0]["address"], result[0]["issueDate"], result[0]["expiryDate"], result[0]["status"],result[0]["course"],result[0]["courseDuration"]);
+    await supabase.from("StCard").update({"formImage":url}).eq("userId", userId);
   }
 
-
-  Future<UserModel> getUserData()async
+    addProilePhotoUrl(String url)async
   {
-       var userId = await getCurrentUserId();
-       var result = await supabase.from("Users").select().eq("userId", userId);
+        var userId = await getCurrentUserId();
+    await supabase.from("StCard").update({"photo":url}).eq("userId", userId);
+  }
+  Future<StCardModel> GetStCardDetails() async {
+    var userId = await getCurrentUserId();
+    var result = await supabase.from("StCard").select().eq("userId", userId);
 
-      return UserModel(userId, result[0]["userName"], result[0]["userAdress"], result[0]["userDob"], result[0]["userPhone"], result[0]["userEmail"]);
-     
+    return StCardModel(
+        result[0]["stId"],
+        userId,
+        result[0]["institutionName"],
+        result[0]["institutionPlace"],
+        result[0]["address"],
+        result[0]["issueDate"],
+        result[0]["expiryDate"],
+        result[0]["status"],
+        result[0]["course"],
+        result[0]["courseDuration"]);
   }
 
+  Future<UserModel> getUserData() async {
+    var userId = await getCurrentUserId();
+    var result = await supabase.from("Users").select().eq("userId", userId);
 
-  Future<List<Map>> getStudentRoutes(int stid)async{
+    return UserModel(userId, result[0]["userName"], result[0]["userAdress"],
+        result[0]["userDob"], result[0]["userPhone"], result[0]["userEmail"]);
+  }
 
+  Future<List<Map>> getStudentRoutes(int stid) async {
     var result = await supabase.from("StudentRoutes").select().eq("stId", stid);
 
+    List<Map> list = [];
 
+    list.add({"from": result[0]['from'], "to": result[0]['to']});
+    list.add({"from": result[1]['from'], "to": result[1]['to']});
 
-        List<Map> list=[];
-
-        list.add({"from":result[0]['from'],"to":result[0]['to']});
-        list.add({"from":result[1]['from'],"to":result[1]['to']});
-
-
-        return list;
-
-
+    return list;
   }
 
   Future<List<ReviewModel>> getReviews(int busId) async {
@@ -209,33 +334,32 @@ class SupaBaseDatabase {
       reviewlist.add(ReviewModel(list[i]['id'], list[i]['review'],
           list[i]['rating'], name['userName']));
     }
-    print(reviewlist);
 
     return reviewlist;
   }
 
-
-  
-  Future<List<BusReportModel>> getBusReport(String startDate,String endDate) async {
-    List  data=[];
-    int id=await getCurrentUserId();
-    if(startDate=="" || endDate==""||startDate=="null"||endDate=="null")
-    {
-   data = await supabase.from('Payment').select().eq("userId", id);
-
-    }
-    else
-    {
-         data = await supabase.from('Payment').select().eq("userId", id).lt("date", endDate).gt("date", startDate);
-
+  Future<List<BusReportModel>> getBusReport(
+      String startDate, String endDate) async {
+    List data = [];
+    int id = await getCurrentUserId();
+    if (startDate == "" ||
+        endDate == "" ||
+        startDate == "null" ||
+        endDate == "null") {
+      data = await supabase.from('Payment').select().eq("userId", id);
+    } else {
+      data = await supabase
+          .from('Payment')
+          .select()
+          .eq("userId", id)
+          .lt("date", endDate)
+          .gt("date", startDate);
     }
     var list = data as List;
 
     List<BusReportModel> reportlist = [];
 
-    print("sssssssssssssssssssssssssssssss");
     for (int i = 0; i < list.length; i++) {
-      print("sssssssssssssssssssssssssssssss");
       var userData = await supabase
           .from('Users')
           .select("userName,userDob")
@@ -253,9 +377,76 @@ class SupaBaseDatabase {
           list[i]['date'],
           list[i]['fromBusStop'],
           list[i]['toBusStop'],
-          list[i]['busFare'],userData['userDob']));
+          list[i]['busFare'],
+          userData['userDob']));
     }
 
     return reportlist;
   }
+
+  Future<bool> lookIfStConssesionAvailable() async {
+    int id = await getCurrentUserId();
+    final data = await supabase.from('StCard').select().eq("userId", id);
+    var list = data as List;
+    if (list.isEmpty) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  Future<bool> lookIfElderConssesionAvailable() async {
+    int id = await getCurrentUserId();
+    final data =
+        await supabase.from('SeniorCitizens').select().eq("userId", id);
+    var list = data as List;
+    if (list.isEmpty) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  Future<int> getbusStopIdusingName(String busStopName) async {
+    final data = await supabase
+        .from("BusStops")
+        .select("busStopId")
+        .eq("busStopName", busStopName);
+    return data[0]['busStopId'];
+  }
+
+
+
+  Future<List<String>> getBusStopName()async
+  {
+            print("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
+       final data = await supabase
+        .from("BusStops")
+        .select("busStopName");
+
+
+
+        List<String> list=[];
+        data.forEach((ele){
+          list.add(ele['busStopName']);
+        });
+      
+
+ 
+        return list;
+        
+  }
+
+   Future<String> getBusNameUsingId(int id) async {
+    var data = await supabase
+        .from("Buses")
+        .select("busName")
+        .eq("busId", id);
+
+    var nameData = data as List;
+
+    return nameData[0]['busName'];
+  }
+
+  
 }

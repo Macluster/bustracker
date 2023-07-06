@@ -8,6 +8,9 @@ class BusModel {
   int endStop = 0;
   String startingTime = "";
   int availableSeats=0;
+  int averageSpeed=0;
+  int distanceLeft=0;
+  
   BusModel(this.busId, this.busName, this.busroute, this.busNumber,
-      this.busCurrentLocation, this.startStop, this.endStop, this.startingTime,this.availableSeats);
+      this.busCurrentLocation, this.startStop, this.endStop, this.startingTime,this.availableSeats,this.averageSpeed,this.distanceLeft);
 }
