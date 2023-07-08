@@ -449,5 +449,15 @@ class SupaBaseDatabase {
     return nameData[0]['busName'];
   }
 
+  addReview(int rating,String review,int busId) async {
+          int id = await getCurrentUserId();
+ await supabase
+        .from("Review").insert({"review":review,"rating":rating,"userId":id,"busId":busId});
+
+    
+
+
+  }
+
   
 }
