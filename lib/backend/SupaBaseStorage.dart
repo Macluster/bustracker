@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:bustracker/backend/SupaBaseDatabase.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SupabaseStorage {
@@ -17,12 +18,15 @@ class SupabaseStorage {
 
       final avatarFile = file;
 
-      final String path = await supabase.storage.from('Documents').upload(
+      await supabase.storage
+          .from('Documents')
+          .remove(["UID${userId.toString()}/Photo.jpg"]);
+
+     final String path = await supabase.storage.from('Documents').upload(
             "UID${userId.toString()}/Photo.jpg",
             avatarFile,
             fileOptions: const FileOptions(cacheControl: '3600', upsert: false),
           );
-
       if (path == "Documents/UID${userId.toString()}/Photo.jpg") {
         var url = await supabase.storage
             .from("Documents")
@@ -45,6 +49,10 @@ class SupabaseStorage {
       File file = File(result.files.single.path.toString());
 
       final avatarFile = file;
+
+      await supabase.storage
+          .from('Documents')
+          .remove(["UID${userId.toString()}/Form.jpg"]);
 
       final String path = await supabase.storage.from('Documents').upload(
             "UID${userId.toString()}/Form.jpg",
@@ -72,6 +80,11 @@ class SupabaseStorage {
       File file = File(result.files.single.path.toString());
 
       final avatarFile = file;
+
+      
+      await supabase.storage
+          .from('Documents')
+          .remove(["UID${userId.toString()}/adhar.jpg"]);
 
       final String path = await supabase.storage.from('Documents').upload(
             "UID${userId.toString()}/adhar.jpg",

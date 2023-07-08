@@ -1,5 +1,6 @@
 import 'package:bustracker/Components/Button1.dart';
 import 'package:bustracker/Models/UserModel.dart';
+import 'package:bustracker/Pages/LoginPage.dart';
 import 'package:bustracker/backend/SupaBaseDatabase.dart';
 import 'package:flutter/material.dart';
 
@@ -93,6 +94,8 @@ class _EnterUserDetailsPageState extends State<EnterUserDetailsPage> {
                     var model = UserModel(0, name.text, address.text, dob.text,
                         phone.text, email.text);
                     SupaBaseDatabase().AddUserDetails(model);
+                      Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+  LoginPage() ), (Route<dynamic> route) => false);
                   })
                 ],
               ),

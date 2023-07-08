@@ -247,46 +247,6 @@ class _GraphViewState extends State<GraphView> {
   List<BarChartModel> data = [];
   List<BarChartModel> data2 = [];
 
-  void getPeopleByDate() {
-    var agelist = [0,0,0,0];
-    widget.snap.data!.forEach((element) {
-      var dobYear = element.userDob.split("-")[0];
-
-      int age = DateTime.now().year - int.parse(dobYear);
-
-      if (age >= 10 && age < 20) {
-        agelist[0] = agelist[0] + 1;
-      } else if (age >= 20 && age < 30) {
-        agelist[1] = agelist[1] + 1;
-      } else if (age >= 30 && age < 50) {
-        agelist[2] = agelist[2] + 1;
-      } else if (age >= 50 && age < 70) {
-        agelist[3] = agelist[3] + 1;
-      }
-
-      data2 = [
-        BarChartModel(
-            variable: "10-20",
-            fare: agelist[0],
-            color: charts.ColorUtil.fromDartColor(Colors.amber)),
-        BarChartModel(
-            variable: "20-30",
-            fare: agelist[1],
-            color: charts.ColorUtil.fromDartColor(Colors.amber)),
-        BarChartModel(
-            variable: "30-50",
-            fare: agelist[2],
-            color: charts.ColorUtil.fromDartColor(Colors.amber)),
-        BarChartModel(
-            variable: "60-70",
-            fare: agelist[3],
-            color: charts.ColorUtil.fromDartColor(Colors.amber)),
-      ];
-    });
-
-    setState(() {});
-  }
-
   void getFareOfEachDay() {
     var fares = [0, 0, 0, 0, 0, 0, 0];
     widget.snap.data!.forEach((element) {
@@ -333,7 +293,7 @@ class _GraphViewState extends State<GraphView> {
   @override
   Widget build(BuildContext context) {
     getFareOfEachDay();
-    getPeopleByDate();
+  
     // TODO: implement build
     return Column(
       children: [

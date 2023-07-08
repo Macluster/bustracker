@@ -23,7 +23,7 @@ String contentAnimation="";
       }
       else{
         displayData=isDoneReview;
-        assistanceText="Call at 9895348904";
+        assistanceText="For mor information call at 9848548590";
          contentAnimation="assets/lottie/error.json";
          
       }

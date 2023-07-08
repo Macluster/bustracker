@@ -52,7 +52,8 @@ class _LoginPageState extends State<LoginPage> {
       GestureDetector(
 
         onTap: ()async{
-        await   SupabaseAuthentication().LogIn(emailController.text, passwordController.text);
+      await   SupabaseAuthentication().LogIn(emailController.text, passwordController.text);
+       
 
           int id=await SupaBaseDatabase().getCurrentUserId();
           context.read<UserProvider>().setCurrentUserId(id);

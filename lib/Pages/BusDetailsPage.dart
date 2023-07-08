@@ -33,65 +33,67 @@ class _BusDetailsPageState extends State<BusDetailsPage> {
                         Padding(
                           padding: const EdgeInsets.only(left: 15),
                           child: Container(
-                            width: (76.2/100)*width,
+                            width: (76/100)*width,
                             
-                            child: Column(
-                              children: [
-                              
-                              
-                                const SizedBox(
-                                  height: 50,
-                                ),
-                                Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      widget.model.busName+" Bus",
-                                      style: TextStyle(fontSize: 40,color: Colors.black),
+                            child: SingleChildScrollView(
+                              child: Column(
+                                children: [
+                                
+                                
+                                  const SizedBox(
+                                    height: 50,
+                                  ),
+                                  Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        widget.model.busName+" Bus",
+                                        style: TextStyle(fontSize: 40,color: Colors.black),
+                                      ),
                                     ),
                                   ),
-                                ),
-                               
-                                const SizedBox(
-                                  height: 50,
-                                ),
-                                ItemCard("assets/icons/location.png", widget.model.busCurrentLocation),
-                                ItemCard("assets/icons/waste.png", widget.model.startingTime),
-                                ItemCard("assets/icons/license-plate.png", widget.model.busNumber),
-                                 ItemCard("assets/icons/license-plate.png", widget.model.availableSeats.toString()),
-                                
-                                const SizedBox(
-                                  height: 50,
-                                ),
-                                Row(
-                                  children:  [
-                                    Text(
-                                      "Reviews",
-                                      style: TextStyle(fontSize: 20,color: Theme.of(context).primaryColor),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                                FutureBuilder(
-                                    future: SupaBaseDatabase().getReviews(widget.model.busId),
-                                    builder: (context, AsyncSnapshot<List<ReviewModel>> snap) {
-                                      if (!snap.hasData) {
-                                        return Text("Loading");
-                                      } else {
-                                        return Container(
-                                          height: 250,
-                                          child: ListView.builder(
-                                              itemCount: snap.data!.length,
-                                              itemBuilder: (context, index) {
-                                                return ReviewCard(snap.data![index]);
-                                              }),
-                                        );
-                                      }
-                                    })
-                              ],
+                                 
+                                  const SizedBox(
+                                    height: 50,
+                                  ),
+                                  ItemCard("assets/icons/location.png", widget.model.busCurrentLocation),
+                                  ItemCard("assets/icons/waste.png", widget.model.startingTime),
+                                  ItemCard("assets/icons/license-plate.png", widget.model.busNumber),
+                                   ItemCard("assets/icons/license-plate.png", widget.model.availableSeats.toString()),
+                                  
+                                  const SizedBox(
+                                    height: 50,
+                                  ),
+                                  Row(
+                                    children:  [
+                                      Text(
+                                        "Reviews",
+                                        style: TextStyle(fontSize: 20,color: Theme.of(context).primaryColor),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
+                                  FutureBuilder(
+                                      future: SupaBaseDatabase().getReviews(widget.model.busId),
+                                      builder: (context, AsyncSnapshot<List<ReviewModel>> snap) {
+                                        if (!snap.hasData) {
+                                          return Text("Loading");
+                                        } else {
+                                          return Container(
+                                            height: 250,
+                                            child: ListView.builder(
+                                                itemCount: snap.data!.length,
+                                                itemBuilder: (context, index) {
+                                                  return ReviewCard(snap.data![index]);
+                                                }),
+                                          );
+                                        }
+                                      })
+                                ],
+                              ),
                             ),
                           ),
                         ),

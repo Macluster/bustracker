@@ -170,9 +170,11 @@ class _AddStCardDetailsState extends State<AddStCardDetails> {
                       StCardModel model = StCardModel(0, userID, institutionName.text, institutuionPlace.text, HomePlace.text, issueDate.text, expiryDate.text, "pending", course.text, courseDuration.text);
                       await obj.AddStCardDetails(model);
                       int Stid = await obj.GetStIDOFStCard();
+                      print(Stid);
                       await obj.AddToStudentRoutes(Stid, currentBusStop1, destinationStop1, currentBusStop2, destinationStop2);
+                      
 
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => StCardReviewPage("pending")));
+                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => StCardReviewPage("pending")));
                     })
                   ],
                 ),

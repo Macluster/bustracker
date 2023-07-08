@@ -49,17 +49,19 @@ class _ShowStCardPageState extends State<ShowStCardPage> {
           width: double.infinity,
           child: Padding(
             padding: const EdgeInsets.all(20),
-            child: Column(
-              children: [
-                Text(
-                  "ST Card",
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-              const  SizedBox(
-                  height: 50,
-                ),
-                FlipCard(front: CardFrontSide(), back: CardBackSide())
-              ],
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Text(
+                    "ST Card",
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                const  SizedBox(
+                    height: 50,
+                  ),
+                  FlipCard(front: CardFrontSide(), back: CardBackSide())
+                ],
+              ),
             ),
           ),
         ),
@@ -213,7 +215,7 @@ class _ShowStCardPageState extends State<ShowStCardPage> {
     return Row(
       children: [
         Container(
-            width: 160,
+            width: 150,
             child: Text(
               label,
               style: Theme.of(context).textTheme.labelSmall,

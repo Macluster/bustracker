@@ -29,7 +29,9 @@ class TicketPage extends StatelessWidget {
                 TheTicket(model),
                 GestureDetector(
                   onTap: (){
-                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>MyHomePage(title: "")));
+                    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+   MyHomePage(title: "") ), (Route<dynamic> route) => false);
+                   // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>MyHomePage(title: "")));
                   },
                   child: Container(
                     alignment: Alignment.center,
@@ -147,9 +149,9 @@ class _TheTicketState extends State<TheTicket> {
                           const  SizedBox(
                               height: 5,
                             ),
-                           const Row(
+                            Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children:  [
+                              children: const [
                                 Text(
                                   "OCT 21,10:30 Am",
                                   style: TextStyle(fontSize: 11),

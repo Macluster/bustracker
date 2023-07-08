@@ -238,7 +238,7 @@ class SupaBaseDatabase {
         .eq("userId", userId);
 
     return result != null
-        ? {"status": result[0]["status"], "message": result[0]["message"]}
+        ? {"status": result[0]["status"], "message": result[0]["message"]??""}
         : {"status": "", "message": ""};
   }
 
@@ -263,6 +263,7 @@ class SupaBaseDatabase {
 
   AddToStudentRoutes(
       int stId, String t1, String d1, String t2, String d2) async {
+        print(t1+t2+d1+d2);
     await supabase
         .from("StudentRoutes")
         .insert({"stId": stId, "from": t1, "to": d1});
