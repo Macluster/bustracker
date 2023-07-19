@@ -10,6 +10,8 @@ import '../Components/DropDownList.dart';
 import '../backend/data.dart';
 
 class AddStCardDetails extends StatefulWidget {
+  String action;
+  AddStCardDetails(this.action);
   @override
   State<AddStCardDetails> createState() => _AddStCardDetailsState();
 }
@@ -168,10 +170,13 @@ class _AddStCardDetailsState extends State<AddStCardDetails> {
                       var userID = await obj.getCurrentUserId();
 
                       StCardModel model = StCardModel(0, userID, institutionName.text, institutuionPlace.text, HomePlace.text, issueDate.text, expiryDate.text, "pending", course.text, courseDuration.text);
-                      await obj.AddStCardDetails(model);
+                  
+                      await obj.AddStCardDetails(model,widget.action);
                       int Stid = await obj.GetStIDOFStCard();
                       print(Stid);
-                      await obj.AddToStudentRoutes(Stid, currentBusStop1, destinationStop1, currentBusStop2, destinationStop2);
+                      await obj.AddToStudentRoutes(Stid, currentBusStop1, destinationStop1, currentBusStop2, destinationStop2,widget.action);
+               
+                    
                       
 
                       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => StCardReviewPage("pending")));

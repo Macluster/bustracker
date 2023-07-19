@@ -3,6 +3,7 @@ import 'package:bustracker/Models/UserModel.dart';
 import 'package:bustracker/Pages/LoginPage.dart';
 import 'package:bustracker/backend/SupaBaseDatabase.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class EnterUserDetailsPage extends StatefulWidget {
   @override
@@ -14,7 +15,7 @@ class _EnterUserDetailsPageState extends State<EnterUserDetailsPage> {
   var email = TextEditingController();
   var phone = TextEditingController();
   var address = TextEditingController();
-  var dob = TextEditingController();
+  var dob = "Dob";
 
   @override
   Widget build(BuildContext context) {
@@ -48,12 +49,29 @@ class _EnterUserDetailsPageState extends State<EnterUserDetailsPage> {
                       const SizedBox(
                         height: 30,
                       ),
-                      TextField(
-                        style: Theme.of(context).textTheme.bodySmall,
-                        controller: dob,
-                        decoration: InputDecoration(
-                            hintText: "DOB",
-                            hintStyle: Theme.of(context).textTheme.bodySmall),
+                      GestureDetector(
+                        onTap: () async {
+                          var eDate = await showDatePicker(
+                              context: context,
+                              initialDate: DateTime.now(),
+                              firstDate:
+                                  DateTime.now().subtract(Duration(days: 500)),
+                              lastDate:
+                                  DateTime.now().add(Duration(days: 500)));
+                          dob = eDate.toString().split(" ")[0];
+                          setState(() {});
+                        },
+                        child: Container(
+                          height: 40,
+                          width: double.infinity,
+                          padding: EdgeInsets.only(left: 10),
+                          alignment: Alignment.centerLeft,
+
+                          color: Color.fromARGB(255, 228, 228, 228),
+                          child: Text(
+                            dob,
+                          ),
+                        ),
                       ),
                       const SizedBox(
                         height: 30,
@@ -91,11 +109,29 @@ class _EnterUserDetailsPageState extends State<EnterUserDetailsPage> {
                     ],
                   ),
                   Button1("Submit", () {
-                    var model = UserModel(0, name.text, address.text, dob.text,
+                    var errorText = "Incorrect";
+                    if (phone.text.length < 10 || phone.text.length > 10) {
+                      errorText = errorText + " phone no Format";
+                    }
+                    if (!email.text.contains("@") ||
+                        !email.text.contains(".")) {
+                      if (errorText != "Incorrect") {
+                        errorText = errorText + " &";
+                      }
+                      errorText = errorText + " Email Format";
+                    }
+
+                    var model = UserModel(0, name.text, address.text, dob,
                         phone.text, email.text);
-                    SupaBaseDatabase().AddUserDetails(model);
-                      Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
-  LoginPage() ), (Route<dynamic> route) => false);
+
+                    if (errorText == "Incorrect") {
+                      SupaBaseDatabase().AddUserDetails(model);
+                      Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(builder: (context) => LoginPage()),
+                          (Route<dynamic> route) => false);
+                    } else {
+                      Fluttertoast.showToast(msg: errorText);
+                    }
                   })
                 ],
               ),

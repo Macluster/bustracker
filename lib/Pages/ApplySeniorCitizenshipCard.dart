@@ -18,6 +18,7 @@ class ApplySeniorCitizenshipCard extends StatefulWidget {
 class _SeniorCitizenshipCardState extends State<ApplySeniorCitizenshipCard> {
 
     bool isDoneUploadingAdhar = false;
+    bool isRecordExist=false;
 
   @override
   void initState() {
@@ -31,6 +32,13 @@ class _SeniorCitizenshipCardState extends State<ApplySeniorCitizenshipCard> {
 
   void initialise() async {
     var isDoneReview = await SupaBaseDatabase().GetStatusOFSenioCitizenShipCard();
+    if(isDoneReview["status"]!="")
+    {
+      print(isDoneReview);
+      isRecordExist=true;
+
+    }
+    
     if (isDoneReview['status'] == "pending") {
       Navigator.push(
           context,
@@ -99,13 +107,23 @@ class _SeniorCitizenshipCardState extends State<ApplySeniorCitizenshipCard> {
                         var obj = SupaBaseDatabase();
                         var userID = await obj.getCurrentUserId();
                         UserModel userdata = await obj.getUserData();
+                        print(userdata.userDob);
                         var age =
                             int.parse(DateTime.now().toString().split("-")[0]) -
                                 int.parse(userdata.userDob.split("-")[0]);
 
                         SeniorCitizenModel model =
                             SeniorCitizenModel(0, userID, "pending", "", age);
-                        await obj.AddSeniorCitizenDetails(model);
+                        if(!isRecordExist)
+                        {
+                              await obj.AddSeniorCitizenDetails(model);
+                       
+                              setState(() {
+                                       isRecordExist=true;
+                              });
+                        }
+                       
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=>SeniorCitizenReviewPage("pending")));
                       })
                     : Container()
               ],

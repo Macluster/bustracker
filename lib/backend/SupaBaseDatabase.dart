@@ -5,6 +5,7 @@ import 'package:bustracker/Models/StCardModel.dart';
 import 'package:bustracker/Models/UserModel.dart';
 import 'package:bustracker/backend/FirebaseDatabase.dart';
 import 'package:bustracker/functions/GetWeekDayname.dart';
+import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../Models/BusReportModel.dart';
@@ -25,38 +26,32 @@ class SupaBaseDatabase {
   }
 
   Future<List<BusModel>> getBusData(
-      int routeId, String currentBusStopOfUser,int routeDirection) async {
-
-
-        int currentBusStopIDOfUser=await getbusStopIdusingName(currentBusStopOfUser);
+      int routeId, String currentBusStopOfUser, int routeDirection) async {
+    int currentBusStopIDOfUser =
+        await getbusStopIdusingName(currentBusStopOfUser);
     var date = DateTime.now();
     print(routeId);
-    
 
     print(
         "\n\n**************************Fetching Bus Data with(GetBusData method)*************************\n\n");
-        final data;
-    if(routeDirection==0)
-    {
+    final data;
+    if (routeDirection == 0) {
       print(currentBusStopIDOfUser);
-       data = await supabase
-        .from('Buses')
-        .select()
-        .eq("busRoute", routeId)
-        .lt("busCurrentLocation", currentBusStopIDOfUser);
-
-    }
-    else
-    {
-           print(currentBusStopOfUser);
-       data = await supabase
-        .from('Buses')
-        .select()
-        .eq("busRoute", routeId)
-        .gt("busCurrentLocation", currentBusStopIDOfUser);
+      data = await supabase
+          .from('Buses')
+          .select()
+          .eq("busRoute", routeId)
+          .lt("busCurrentLocation", currentBusStopIDOfUser);
+    } else {
+      print(currentBusStopOfUser);
+      data = await supabase
+          .from('Buses')
+          .select()
+          .eq("busRoute", routeId)
+          .gt("busCurrentLocation", currentBusStopIDOfUser);
       //  .lt("startingTime", "9:00:00");
     }
-  
+
     // final data = await supabase.from('Buses').select().eq("busRoute", routeId).gt("busCurrentLocation", currentBusStopOfUser);
 
     var list = data as List;
@@ -88,7 +83,8 @@ class SupaBaseDatabase {
       buslist.add(model!);
     }
 
-    print("**************************************************************************");
+    print(
+        "**************************************************************************");
 
     return buslist;
   }
@@ -183,8 +179,7 @@ class SupaBaseDatabase {
   }
 
   Future<List<PayementModel>> getHistory() async {
-
-    var id=await getCurrentUserId();
+    var id = await getCurrentUserId();
     List result = await supabase.from("Payment").select().eq("userId", id);
 
     PayementModel model = PayementModel(1, 1, 1, "", "", 1, "");
@@ -207,8 +202,17 @@ class SupaBaseDatabase {
     return list;
   }
 
-  AddStCardDetails(StCardModel model) async {
-    await supabase.from("StCard").insert({
+  AddStCardDetails(StCardModel model, String action) async {
+    var stid = 1;
+    if (action == "update") {
+      var data = await supabase
+          .from("StCard")
+          .select("stId")
+          .eq("userId", model.userId);
+      stid = data[0]["stId"];
+    }
+
+    var map = {
       "userId": model.userId,
       "institutionName": model.institutionName,
       "institutionPlace": model.institutionPlace,
@@ -218,7 +222,14 @@ class SupaBaseDatabase {
       "status": model.status,
       "course": model.course,
       "courseDuration": model.courseDuration
-    });
+    };
+
+    if (action == "insert") {
+      await supabase.from("StCard").insert(map);
+    }
+    {
+      await supabase.from("StCard").update(map).eq("stId", stid);
+    }
   }
 
   AddSeniorCitizenDetails(SeniorCitizenModel model) async {
@@ -238,7 +249,7 @@ class SupaBaseDatabase {
         .eq("userId", userId);
 
     return result != null
-        ? {"status": result[0]["status"], "message": result[0]["message"]??""}
+        ? {"status": result[0]["status"], "message": result[0]["message"] ?? ""}
         : {"status": "", "message": ""};
   }
 
@@ -261,28 +272,51 @@ class SupaBaseDatabase {
     return result[0]["stId"];
   }
 
-  AddToStudentRoutes(
-      int stId, String t1, String d1, String t2, String d2) async {
-        print(t1+t2+d1+d2);
-    await supabase
-        .from("StudentRoutes")
-        .insert({"stId": stId, "from": t1, "to": d1});
-    await supabase
-        .from("StudentRoutes")
-        .insert({"stId": stId, "from": t2, "to": d2});
+  AddToStudentRoutes(int stId, String t1, String d1, String t2, String d2,
+      String action) async {
+    var id1 = 1;
+    var id2=2;
+    if (action == "update") {
+      var data = await supabase
+          .from("StudentRoutes")
+          .select("id")
+          .eq("stId", stId);
+      id1 = data[0]["id"];
+
+        
+      id2 = data[1]["id"];
+    }
+
+    print(t1 + t2 + d1 + d2);
+    if (action == "update") {
+      await supabase
+          .from("StudentRoutes")
+          .update({"stId": stId, "from": t1, "to": d1}).eq("id", id1);
+      await supabase
+          .from("StudentRoutes")
+          .update({"stId": stId, "from": t2, "to": d2}).eq("id", id2);
+    } else {
+      await supabase
+          .from("StudentRoutes")
+          .insert({"stId": stId, "from": t1, "to": d1});
+      await supabase
+          .from("StudentRoutes")
+          .insert({"stId": stId, "from": t2, "to": d2});
+    }
   }
 
-  addFormPhotoUrl(String url)async
-  {
-        var userId = await getCurrentUserId();
-    await supabase.from("StCard").update({"formImage":url}).eq("userId", userId);
+  addFormPhotoUrl(String url) async {
+    var userId = await getCurrentUserId();
+    await supabase
+        .from("StCard")
+        .update({"formImage": url}).eq("userId", userId);
   }
 
-    addProilePhotoUrl(String url)async
-  {
-        var userId = await getCurrentUserId();
-    await supabase.from("StCard").update({"photo":url}).eq("userId", userId);
+  addProilePhotoUrl(String url) async {
+    var userId = await getCurrentUserId();
+    await supabase.from("StCard").update({"photo": url}).eq("userId", userId);
   }
+
   Future<StCardModel> GetStCardDetails() async {
     var userId = await getCurrentUserId();
     var result = await supabase.from("StCard").select().eq("userId", userId);
@@ -416,48 +450,29 @@ class SupaBaseDatabase {
     return data[0]['busStopId'];
   }
 
+  Future<List<String>> getBusStopName() async {
+    print("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
+    final data = await supabase.from("BusStops").select("busStopName");
 
+    List<String> list = [];
+    data.forEach((ele) {
+      list.add(ele['busStopName']);
+    });
 
-  Future<List<String>> getBusStopName()async
-  {
-            print("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
-       final data = await supabase
-        .from("BusStops")
-        .select("busStopName");
-
-
-
-        List<String> list=[];
-        data.forEach((ele){
-          list.add(ele['busStopName']);
-        });
-      
-
- 
-        return list;
-        
+    return list;
   }
 
-   Future<String> getBusNameUsingId(int id) async {
-    var data = await supabase
-        .from("Buses")
-        .select("busName")
-        .eq("busId", id);
+  Future<String> getBusNameUsingId(int id) async {
+    var data = await supabase.from("Buses").select("busName").eq("busId", id);
 
     var nameData = data as List;
 
     return nameData[0]['busName'];
   }
 
-  addReview(int rating,String review,int busId) async {
-          int id = await getCurrentUserId();
- await supabase
-        .from("Review").insert({"review":review,"rating":rating,"userId":id,"busId":busId});
-
-    
-
-
+  addReview(int rating, String review, int busId) async {
+    int id = await getCurrentUserId();
+    await supabase.from("Review").insert(
+        {"review": review, "rating": rating, "userId": id, "busId": busId});
   }
-
-  
 }

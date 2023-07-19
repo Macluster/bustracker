@@ -15,6 +15,7 @@ class ApplyStCard extends StatefulWidget {
 class _ApplyStCardState extends State<ApplyStCard> {
   bool isDoneUploadingPhoto = false;
   bool isDoneUploadingForm = false;
+   bool isRecordExist=false;
 
   @override
   void initState() {
@@ -25,6 +26,12 @@ class _ApplyStCardState extends State<ApplyStCard> {
 
   void initialise() async {
     var isDoneReview = await SupaBaseDatabase().GetStatusOFStCard();
+       if(isDoneReview["status"]!="")
+    {
+      print(isDoneReview);
+      isRecordExist=true;
+
+    }
     if (isDoneReview['status'] == "pending") {
       Navigator.push(context, MaterialPageRoute(builder: (context) => StCardReviewPage("pending")));
     } else if (isDoneReview['status']  == "done") {
@@ -94,7 +101,18 @@ class _ApplyStCardState extends State<ApplyStCard> {
                 ),
                 isDoneUploadingPhoto && isDoneUploadingForm
                     ? Button1("Continue", () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => AddStCardDetails()));
+                        if(isRecordExist)
+                        {
+                            
+                         Navigator.push(context, MaterialPageRoute(builder: (context) => AddStCardDetails("update")));
+                              setState(() {
+                                       isRecordExist=true;
+                              });
+                        }
+                        else{
+                         Navigator.push(context, MaterialPageRoute(builder: (context) => AddStCardDetails("insert")));
+                        }
+                      
                       })
                     : Container()
               ],

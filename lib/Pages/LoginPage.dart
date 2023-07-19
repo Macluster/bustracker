@@ -46,6 +46,7 @@ class _LoginPageState extends State<LoginPage> {
       child: TextField(
 
          style: Theme.of(context).textTheme.bodySmall ,
+         obscureText: true,
        controller: passwordController, 
         decoration: InputDecoration(hintText: "Password",hintStyle: Theme.of(context).textTheme.bodySmall),)),
       const SizedBox(height: 50,),

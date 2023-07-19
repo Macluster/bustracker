@@ -58,7 +58,7 @@ class _StCardReviewPageState extends State<StCardReviewPage> {
               SizedBox(height: 50,),
               
               
-              Text(widget.assistanceText, style: TextStyle(color: Colors.grey,fontSize: 20),),
+              Text(widget.assistanceText, style: TextStyle(color: Colors.grey,fontSize: 20,),textAlign: TextAlign.center,),
              
        
             ],),

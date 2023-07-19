@@ -24,7 +24,7 @@ String contentAnimation="";
       }
       else{
         displayData=isDoneReview;
-        assistanceText="Call at 9895348904";
+        assistanceText="For more information call at 9895348904";
           contentAnimation="assets/lottie/error.json";
         
          
@@ -57,7 +57,7 @@ class _SeniorCitizenReviewPageState extends State<SeniorCitizenReviewPage> {
               SizedBox(height: 50,),
               
               
-              Text(widget.assistanceText, style: TextStyle(color: Colors.grey,fontSize: 20),)
+              Text(widget.assistanceText, style: TextStyle(color: Colors.grey,fontSize: 20),textAlign: TextAlign.center,)
        
             ],),
               Button1("ReSubmit", (){Navigator.pop(context);})

@@ -16,76 +16,78 @@ class _SignUpPageState extends State<SignUpPage> {
     return Scaffold(
         body: SizedBox(
       width: double.infinity,
-      child: Column(
-        children: [
-          const SizedBox(
-            height: 100,
-          ),
-          Text(
-            "SignUp",
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-          const SizedBox(
-            height: 100,
-          ),
-          Container(
-              width: 250,
-              child: TextField(
-                controller: emailController,
-                decoration: InputDecoration(
-                    hintText: "User name",
-                    hintStyle: Theme.of(context).textTheme.bodySmall),
-              )),
-          SizedBox(
-            height: 40,
-          ),
-          Container(
-              width: 250,
-              child: TextField(
-                controller: passwordController,
-                decoration: InputDecoration(
-                    hintText: " Create Password",
-                    hintStyle: Theme.of(context).textTheme.bodySmall),
-              )),  
-          const SizedBox(
-            height: 50,
-          ),
-          GestureDetector(
-            onTap: () {
-              SupabaseAuthentication().signupEmailAndPassword(
-                  emailController.text, passwordController.text);
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => EnterUserDetailsPage()));
-            },
-            child: Container(
-              alignment: Alignment.center,
-              height: 35,
-              width: 100,
-              decoration: const BoxDecoration(
-                  color: Colors.amber,
-                  borderRadius: BorderRadius.all(Radius.circular(20))),
-              child: Text("signUp"),
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            const SizedBox(
+              height: 100,
             ),
-          ),
-         const  SizedBox(
-            height: 30,
-          ),
-        const   SizedBox(
-            height: 50,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SignInCard('assets/icons/google.png'),
-              SizedBox(
-                width: 50,
+            Text(
+              "SignUp",
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            const SizedBox(
+              height: 100,
+            ),
+            Container(
+                width: 250,
+                child: TextField(
+                  controller: emailController,
+                  decoration: InputDecoration(
+                      hintText: "User name",
+                      hintStyle: Theme.of(context).textTheme.bodySmall),
+                )),
+            SizedBox(
+              height: 40,
+            ),
+            Container(
+                width: 250,
+                child: TextField(
+                  controller: passwordController,
+                  decoration: InputDecoration(
+                      hintText: " Create Password",
+                      hintStyle: Theme.of(context).textTheme.bodySmall),
+                )),  
+            const SizedBox(
+              height: 50,
+            ),
+            GestureDetector(
+              onTap: () {
+                SupabaseAuthentication().signupEmailAndPassword(
+                    emailController.text, passwordController.text);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => EnterUserDetailsPage()));
+              },
+              child: Container(
+                alignment: Alignment.center,
+                height: 35,
+                width: 100,
+                decoration: const BoxDecoration(
+                    color: Colors.amber,
+                    borderRadius: BorderRadius.all(Radius.circular(20))),
+                child: Text("signUp"),
               ),
-              SignInCard('assets/icons/facebook.png')
-            ],
-          )
-        ],
+            ),
+           const  SizedBox(
+              height: 30,
+            ),
+          const   SizedBox(
+              height: 50,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SignInCard('assets/icons/google.png'),
+                SizedBox(
+                  width: 50,
+                ),
+                SignInCard('assets/icons/facebook.png')
+              ],
+            )
+          ],
+        ),
       ),
     ));
   }

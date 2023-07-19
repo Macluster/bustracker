@@ -176,7 +176,7 @@ class _ShowStCardPageState extends State<ShowStCardPage> {
             SizedBox(width: 10),
             Container(
               height: double.infinity,
-              width: 100,
+              width: 80,
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.red, width: 3),
               ),
@@ -191,7 +191,7 @@ class _ShowStCardPageState extends State<ShowStCardPage> {
     return Row(
       children: [
         Container(
-            width: 150,
+            width: 120,
             child: Text(
               route['from'],
               style: Theme.of(context).textTheme.labelSmall,
@@ -215,7 +215,7 @@ class _ShowStCardPageState extends State<ShowStCardPage> {
     return Row(
       children: [
         Container(
-            width: 150,
+            width: 120,
             child: Text(
               label,
               style: Theme.of(context).textTheme.labelSmall,
@@ -228,7 +228,7 @@ class _ShowStCardPageState extends State<ShowStCardPage> {
           width: 20,
         ),
         Container(
-          width: 150,
+          width: 110,
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Text(
