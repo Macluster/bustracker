@@ -115,6 +115,9 @@ class SupaBaseDatabase {
       int userId, int busId, int fare, String from, String to) async {
     var date = DateTime.now();
     var weekday = date.weekday;
+
+    var data=await supabase.from("Buses").select("ownerId").eq("busId",busId);
+    var ownerId=data[0]["ownerId"];
     var mydate = "${date.year}-${date.month}-${date.day}";
     //  var dateFormat = "${GetWeekDayName(weekday)} $mydate";
 
@@ -124,7 +127,8 @@ class SupaBaseDatabase {
       "fromBusStop": from,
       "date": mydate,
       "toBusStop": to,
-      "busFare": fare
+      "busFare": fare,
+      "ownerId":ownerId
     });
     print(result.toString());
   }
